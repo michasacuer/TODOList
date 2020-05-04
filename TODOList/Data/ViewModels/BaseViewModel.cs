@@ -1,14 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace TODOList
 {
-    class BaseViewModel : INotifyPropertyChanged
+    [Serializable()]
+    public class BaseViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChange([CallerMemberName]string v = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(v));
+            }
+        }
     }
 }

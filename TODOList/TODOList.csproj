@@ -61,6 +61,9 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -88,6 +91,14 @@
     <Compile Include="Data\Models\TODOSubItem.cs" />
     <Compile Include="Data\Models\TODOItem.cs" />
     <Compile Include="Data\ViewModels\SubItemViewModel.cs" />
+    <Compile Include="Data\ViewModels\MainViewModel.cs" />
+    <Compile Include="Data\RelayCommand.cs" />
+    <Compile Include="DateConverter.cs" />
+    <Compile Include="MultiCommandConverter.cs" />
+    <Compile Include="NewTask.xaml.cs">
+      <DependentUpon>NewTask.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SubItemTemporaryModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -101,13 +112,17 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="NewTask.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HeaderToImageConverter.cs" />
+    <Compile Include="Data\NormalCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -138,23 +153,22 @@
     <Resource Include="list.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\close.png" />
-    <Resource Include="Images\minimize.png" />
+    <Resource Include="Graphics\close.png" />
+    <Resource Include="Graphics\minimize.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\star%28color%29.png" />
-    <Resource Include="Images\star%28white%29.png" />
+    <Resource Include="Graphics\list.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\list.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Resource Include="Images\plus.png" />
+    <Resource Include="Graphics\starC.png" />
+    <Resource Include="Graphics\starW.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\confirm.png" />
-    <Resource Include="Images\delete.png" />
+    <Resource Include="Graphics\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\confirm.png" />
+    <Resource Include="Graphics\delete.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">

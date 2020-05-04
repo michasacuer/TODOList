@@ -6,11 +6,24 @@ using System.Threading.Tasks;
 
 namespace TODOList
 {
-    class SubItemViewModel:BaseViewModel
+    public class SubItemViewModel:BaseViewModel
     {
         public string Title { get; set; }
-        public bool IsCompleted { get; set; }
+        private bool isCompleted;
+        public bool IsCompleted
+        {
+            get
+            {
+                return isCompleted;
+            }
+            set
+            {
+                isCompleted = value;
+                OnPropertyChange();
+            }
+        }
 
+        public SubItemViewModel() { }
         public SubItemViewModel(string Title)
         {
             this.Title = Title;

@@ -5,17 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Media.Imaging;
 
 namespace TODOList
 {
-    [ValueConversion(typeof(bool),typeof(BitmapImage))]
-    public class HeaderToImageConverter:IValueConverter
+    class DateConverter : IValueConverter
     {
-        public static HeaderToImageConverter Instance = new HeaderToImageConverter();
+        public static DateConverter Instance = new DateConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if(value!=null) return ((DateTime)(value)).ToShortDateString();
+
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
