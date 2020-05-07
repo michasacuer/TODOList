@@ -35,23 +35,22 @@
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <Border BorderThickness="1">
-                    <Button x:Name="ItemBtn" Command="{Binding Open}" CommandParameter="{Binding Tag, ElementName=ItemBtn}" Tag="Item" Style="{DynamicResource Button.Hoverless}" HorizontalAlignment="Left" Width="40" Height="40" Background="Transparent">
-                        <Image Source="Graphics/plus.png" />
-                    </Button>
+                    <Grid>
+                        <Button x:Name="ItemBtn" ToolTip="Add new task" Command="{Binding Open}" CommandParameter="{Binding Tag, ElementName=ItemBtn}" Tag="Item" Style="{DynamicResource Button.Hoverless}" HorizontalAlignment="Left" Width="40" Height="40" Background="Transparent">
+                            <Image Source="Graphics/plus.png" />
+                        </Button>
+                        <Button HorizontalAlignment="Left" Width="40" Height="40" Margin="50,0" ToolTip="Finish selected task" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding FinishTask}">
+                            <Image Source="Graphics/confirm.png"/>
+                        </Button>
+                    </Grid>
                 </Border>
-                <ListBox x:Name="ItemsPanel" Height="380" ItemsSource="{Binding Tasks, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedItem="{Binding Selected}" SelectedIndex="{Binding Index}">
+                <ListBox x:Name="ItemsPanel" Height="380" ItemsSource="{Binding Tasks, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedItem="{Binding Selected,Mode=OneWayToSource}" SelectedIndex="{Binding Index,Mode=OneWayToSource}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="40" Height="40" Source="{Binding Priority}"/>
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Title, Mode=OneWay}"/>
-                                <Grid>
-                                    <ProgressBar Width="150" Value="{Binding Percent, Mode=OneWay}" Minimum="0" Maximum="{Binding Count, Mode=OneWay}" Foreground="#FF05EA2F"/>
-                                    <TextBlock Text="{Binding PercentString, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                                <Button HorizontalAlignment="Right" Width="40" Height="40" Background="Transparent" Style="{DynamicResource Button.Hoverless}">
-                                    <Image Source="Graphics/confirm.png"/>
-                                </Button>
+                                <Image Width="40" Height="40" Source="{Binding Priority}" />
+                                <TextBlock VerticalAlignment="Center" Width="100" TextAlignment="Center" Text="{Binding Title, Mode=OneWay}"/>
+                                <TextBlock VerticalAlignment="Center" Width="200" TextAlignment="Center" Text="{Binding SubTaskString, Mode=OneWay}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -71,29 +70,35 @@
                     <TextBlock Text="{Binding Selected.CompletedString}" Width="50" Height="30" FontSize="10" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="50,55,0,0"/>
                 </Grid>
                 <Grid Margin="0,0">
-                    <ProgressBar Width="200" Height="25" Value="{Binding Selected.Percent,Mode=OneWay}" Minimum="0" Maximum="{Binding Selected.Count}" Foreground="#FF05EA2F" />
-                    <TextBlock Text="{Binding Selected.PercentString}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ProgressBar Width="200" Height="25" Value="{Binding Selected.Percent,Mode=OneWay}" Minimum="0" Maximum="100" Foreground="#FF05EA2F" />
+                    <TextBlock Text="{Binding Selected.PercentString,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Grid>
-                <ListView x:Name="SubItemsPanel" Height="150" Width="230" Margin="0,20" ItemsSource="{Binding Selected.SubItems}">
+                <ListView x:Name="SubItemsPanel" Height="150" Width="230" Margin="0,20" ItemsSource="{Binding Selected.SubItems}" Visibility="{Binding Selected.SubItemsVisible}">
                     <ListView.ItemTemplate>
                         <HierarchicalDataTemplate>
                             <WrapPanel>
-                                <Image Width="40" Height="40" Margin="5,0" Source=""/>
+                                <Image Width="40" Height="40" Margin="5,0" Source="{Binding image}"/>
                                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="100" Text="{Binding Title}"/>
-                                <Button HorizontalAlignment="Right" Width="40" Height="40" Background="Transparent" Style="{DynamicResource Button.Hoverless}">
-                                    <Image Source="Graphics/confirm.png"/>
-                                </Button>
-                                <Button HorizontalAlignment="Right" Width="40" Height="40" Background="Transparent" Style="{DynamicResource Button.Hoverless}">
-                                    <Image Source="graphics/delete.png"/>
-                                </Button>
                             </WrapPanel>
                         </HierarchicalDataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <WrapPanel VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Button x:Name="PriorityBtn" ToolTip="Change task priority" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding PriorityChange}" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Image Source="Graphics/starC.png"/>
+                    </Button>
+                    <Button x:Name="SubItemBtn" ToolTip="Add new subtask" Background="Transparent" Tag="SubItem" Style="{DynamicResource Button.Hoverless}" Command="{Binding Open}" CommandParameter="{Binding Tag, ElementName=SubItemBtn}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <Image Source="Graphics/plus.png"/>
+                    </Button>
+                    <Button HorizontalAlignment="Center" ToolTip="Finish selected subtask" VerticalAlignment="Bottom" Width="40" Height="40" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding MarkAsCompleted}" CommandParameter="{Binding ElementName=SubItemsPanel,Path=SelectedIndex}">
+                        <Image Source="Graphics/confirm.png"/>
+                    </Button>
+                    <Button HorizontalAlignment="Center" ToolTip="Delete selected subtask" Width="40" Height="40" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding Remove}" CommandParameter="{Binding ElementName=SubItemsPanel,Path=SelectedIndex}">
+                        <Image Source="graphics/delete.png"/>
+                    </Button>
+                </WrapPanel>
             </StackPanel>
-            <Button x:Name="SubItemBtn" Grid.Column="1" Background="Transparent" Tag="SubItem" Style="{DynamicResource Button.Hoverless}" Command="{Binding Open}" CommandParameter="{Binding Tag, ElementName=SubItemBtn}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                <Image Source="Graphics/plus.png"/>
-            </Button>
+            
         </Grid>
     </StackPanel>
 </Window>

@@ -19,7 +19,17 @@ namespace TODOList
             set
             {
                 isCompleted = value;
-                OnPropertyChange();
+                OnPropertyChange("IsCompleted");
+                OnPropertyChange("image");
+            }
+        }
+
+        public string image
+        {
+            get
+            {
+                if (IsCompleted) return "Graphics/check.png";
+                else return "Graphics/square.png";
             }
         }
 

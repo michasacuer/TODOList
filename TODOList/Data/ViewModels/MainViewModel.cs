@@ -21,6 +21,7 @@ namespace TODOList
         public ICommand Confirm { get; set; }
 
         public ICommand WindowClosing { get; set; }
+        public ICommand PriorityChange { get; set; }
         #endregion
 
         public string XmlFilePath = "TasksSerialization.xml";
@@ -35,7 +36,7 @@ namespace TODOList
             set
             {
                 index = value;
-                OnPropertyChange();
+                OnPropertyChange("Index");
             }
         }
 
@@ -49,14 +50,14 @@ namespace TODOList
             set
             {
                 SelectedItem = value;
-                OnPropertyChange();
+                OnPropertyChange("Selected");
             }
         }
         private ObservableCollection<ItemViewModel> tasks;
         public ObservableCollection<ItemViewModel> Tasks
         {
             get { return tasks ?? (tasks = new ObservableCollection<ItemViewModel>()); }
-            set { tasks = value; OnPropertyChange(); }
+            set { tasks = value; OnPropertyChange("Tasks"); }
         }
 
         public static MainViewModel Instance = new MainViewModel();
@@ -68,10 +69,11 @@ namespace TODOList
             Open = new RelayCommand<string>(OpenWindow);
             MarkAsCompleted = new RelayCommand<Int32>(_MarkAsCompleted);
             Remove = new RelayCommand<Int32>(_Remove);
-            FinishTask = new RelayCommand<Int32>(_FinishTask);
+            FinishTask = new NormalCommand(_FinishTask);
             CloseApp = new RelayCommand<Window>(Close);
             Minimize = new RelayCommand<Window>(minimize);
             WindowClosing = new NormalCommand(Closing);
+            PriorityChange = new NormalCommand(ChangePriority);
 
             if (File.Exists(XmlFilePath))
             {
@@ -104,6 +106,7 @@ namespace TODOList
             {
                 
                 Tasks[Index].SubItems.Add(new SubItemViewModel(param[2].ToString()));
+                Tasks[Index].CheckCompletion();
             }
             else
             {
@@ -112,19 +115,29 @@ namespace TODOList
             (param[0] as Window).Close();
         }
 
-        private void _MarkAsCompleted(int index)
+        private void _MarkAsCompleted(int ind)
         {
-            Selected.SubItems[index].IsCompleted = true;
+            if (ind > -1)
+            {
+                Tasks[Index].SubItems[ind].IsCompleted = true;
+                Tasks[Index].CheckCompletion();
+            }
+            
         }
 
         private void _Remove(int index)
         {
-            Selected.SubItems.RemoveAt(index);
+            if (index > -1)
+            {
+                Tasks[Index].SubItems.RemoveAt(index);
+                Tasks[Index].CheckCompletion();
+            }
+            
         }
 
-        private void _FinishTask(int index)
+        private void _FinishTask()
         {
-            Tasks.RemoveAt(index);
+            Tasks.RemoveAt(Index);
         }
 
         private void minimize(Window window)
@@ -135,6 +148,11 @@ namespace TODOList
         private void Close(Window window)
         {
             if (window != null) window.Close();
+        }
+
+        private void ChangePriority()
+        {
+            Tasks[Index].priority = Tasks[Index].priority==true?false:true;
         }
 
         private void Closing()

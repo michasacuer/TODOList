@@ -9,7 +9,7 @@ namespace TODOList
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChange([CallerMemberName]string v = null)
+        public void OnPropertyChange(string v)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)

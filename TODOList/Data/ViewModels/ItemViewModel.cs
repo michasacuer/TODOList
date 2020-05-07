@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace TODOList
 {
@@ -32,7 +33,7 @@ namespace TODOList
         {
             get
             {
-                return SubItems.Count + 1;
+                return SubItems.Count;
             }
         }
         private int completed;
@@ -45,7 +46,8 @@ namespace TODOList
             set
             {
                 completed = value;
-                OnPropertyChange();
+                OnPropertyChange("Completed");
+                OnPropertyChange("CompletedString");
             }
         }
 
@@ -56,19 +58,11 @@ namespace TODOList
                 return Completed + "/" + Count;
             }
         }
-        public int Percent
+        public string SubTaskString
         {
             get
             {
-                return Completed/Count*100;
-            }
-        }
-
-        public string PercentString
-        {
-            get
-            {
-                return Percent.ToString()+"%";
+                return "Completed subtask: "+Completed+"/"+Count;
             }
         }
 
@@ -82,7 +76,17 @@ namespace TODOList
             set
             {
                 _priority = value;
-                OnPropertyChange();
+                OnPropertyChange("priority");
+            }
+        }
+
+        private bool shouldVisible;
+
+        public Visibility SubItemsVisible
+        {
+            get
+            {
+                return shouldVisible ? Visibility.Visible : Visibility.Hidden;
             }
         }
 
@@ -94,7 +98,18 @@ namespace TODOList
                 else return "Graphics/starW.png";
             }
         }
-        public ObservableCollection<SubItemViewModel> SubItems { get; set; }
+
+        private ObservableCollection<SubItemViewModel> subItems;
+        public ObservableCollection<SubItemViewModel> SubItems
+        {
+            get { return subItems ?? (subItems = new ObservableCollection<SubItemViewModel>()); }
+            set
+            {
+                subItems = value;
+                OnPropertyChange("SubItems");
+                OnPropertyChange("Count");
+            }
+        }
         #endregion
 
         #region Constructor
@@ -108,13 +123,21 @@ namespace TODOList
             this.AddDate = AddDate.Date;
             this.Deadline = Deadline;
             this.priority = priority;
+            shouldVisible = false;
             SubItems = new ObservableCollection<SubItemViewModel>();
+            CheckCompletion();
         }
         #endregion
         #region Methods
         public void CheckCompletion()
         {
             Completed = SubItems.Where(x => x.IsCompleted == true).Count();
+            shouldVisible = subItems.Count > 0 ? true : false;
+            OnPropertyChange("SubItemsVisible");
+            OnPropertyChange("Completed");
+            OnPropertyChange("CompletedString");
+            OnPropertyChange("Count");
+            OnPropertyChange("SubTaskString");
         }
         #endregion
     }
