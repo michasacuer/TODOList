@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TODOList
 {
-    class TODOSubItem
+    class TODOSubTask
     {
         public string Title { get; set; }
         public bool IsCompleted { get; set; }

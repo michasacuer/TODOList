@@ -8,6 +8,10 @@ using System.Windows.Data;
 
 namespace TODOList
 {
+    /// <summary>
+    /// Converter that convert date form date picker
+    /// to short string that is displayed on text block
+    /// </summary>
     class DateConverter : IValueConverter
     {
         public static DateConverter Instance = new DateConverter();

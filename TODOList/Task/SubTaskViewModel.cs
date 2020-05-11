@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace TODOList
 {
-    public class SubItemViewModel:BaseViewModel
+    public class SubTaskViewModel:BaseViewModel
     {
+        public Guid id { get; set; }
         public string Title { get; set; }
         private bool isCompleted;
         public bool IsCompleted
@@ -33,9 +34,10 @@ namespace TODOList
             }
         }
 
-        public SubItemViewModel() { }
-        public SubItemViewModel(string Title)
+        public SubTaskViewModel() { }
+        public SubTaskViewModel(string Title)
         {
+            this.id = Guid.NewGuid();
             this.Title = Title;
             this.IsCompleted = false;
         }

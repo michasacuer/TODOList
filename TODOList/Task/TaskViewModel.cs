@@ -9,11 +9,20 @@ using System.Windows;
 namespace TODOList
 {
     [Serializable()]
-    public class ItemViewModel:BaseViewModel
+    public class TaskViewModel:BaseViewModel
     {
         #region Fields and Properties
+
+        public Guid id { get; set; }
         public string Title { get; set; }
         public DateTime AddDate { get; set; }
+
+        private DateTime NextNotifyDate { get; set; }
+
+        public bool IsRepeated { get; set; }
+
+
+
         public string AddDateString
         {
             get
@@ -26,7 +35,8 @@ namespace TODOList
         {
             get
             {
-                return Deadline.ToShortDateString();
+                if (Deadline != null) return Deadline.ToShortDateString();
+                else return "-";
             }
         }
         public int Count
@@ -99,10 +109,10 @@ namespace TODOList
             }
         }
 
-        private ObservableCollection<SubItemViewModel> subItems;
-        public ObservableCollection<SubItemViewModel> SubItems
+        private ObservableCollection<SubTaskViewModel> subItems;
+        public ObservableCollection<SubTaskViewModel> SubItems
         {
-            get { return subItems ?? (subItems = new ObservableCollection<SubItemViewModel>()); }
+            get { return subItems ?? (subItems = new ObservableCollection<SubTaskViewModel>()); }
             set
             {
                 subItems = value;
@@ -113,22 +123,60 @@ namespace TODOList
         #endregion
 
         #region Constructor
-        public ItemViewModel()
+
+        /// <summary>
+        /// Constructor without parameter
+        /// </summary>
+        public TaskViewModel()
         {
 
         }
-        public ItemViewModel(string Title,DateTime AddDate,DateTime Deadline,bool priority)
+
+        /// <summary>
+        /// Constructor that is used for repetitive tasks
+        /// </summary>
+        /// <param name="Title">Task title</param>
+        /// <param name="AddDate">Date when task was added</param>
+        /// <param name="interval">String to set repetitive interval</param>
+        /// <param name="priority">Boolean to set positioning of task</param>
+        public TaskViewModel(string Title,DateTime AddDate,string interval,bool priority)
         {
+            this.id = Guid.NewGuid();
+            this.Title = Title;
+            this.AddDate = AddDate.Date;
+            this.Deadline = Convert.ToDateTime(null);
+            this.priority = priority;
+            shouldVisible = false;
+            this.IsRepeated = true;
+            SubItems = new ObservableCollection<SubTaskViewModel>();
+            CheckCompletion();
+        }
+
+        /// <summary>
+        /// Constructor that is used for non-repetitive tasks
+        /// </summary>
+        /// <param name="Title">Task title</param>
+        /// <param name="AddDate">Date when task was added</param>
+        /// <param name="Deadline">Date by which the task should be completed</param>
+        /// <param name="priority">Boolean to set positioning of task</param>
+        public TaskViewModel(string Title,DateTime AddDate,DateTime Deadline,bool priority)
+        {
+            this.id = Guid.NewGuid();
             this.Title = Title;
             this.AddDate = AddDate.Date;
             this.Deadline = Deadline;
             this.priority = priority;
+            this.IsRepeated = false;
             shouldVisible = false;
-            SubItems = new ObservableCollection<SubItemViewModel>();
+            SubItems = new ObservableCollection<SubTaskViewModel>();
             CheckCompletion();
         }
         #endregion
         #region Methods
+        /// <summary>
+        /// Method that is checking completed task
+        /// and infrom view about that
+        /// </summary>
         public void CheckCompletion()
         {
             Completed = SubItems.Where(x => x.IsCompleted == true).Count();

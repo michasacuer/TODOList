@@ -9,6 +9,10 @@
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+    </Window.Resources>
     <StackPanel>
         <StackPanel Orientation="Horizontal" Height="30" Background="#3F3F3F">
             <Label DockPanel.Dock="Left" Height="30" Content="TODO List - order your work" Foreground="WhiteSmoke"/>
@@ -27,6 +31,13 @@
                     <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Deadline:" Width="60" Height="25" Margin="185,3,0,0"/>
                     <TextBlock FontSize="15" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding ElementName=DeadlineSelector,Path=SelectedDate,Converter={x:Static local:DateConverter.Instance}}" Width="120" Height="25" Margin="255,3,0,0"/>
                     <CheckBox x:Name="PriorityBox" Content="Priority" Width="100" Height="25" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="185,40,0,0"/>
+                    <CheckBox x:Name="RepeatBox" Content="Repeat" Width="100" Height="25" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="185,65,0,0" />
+                    <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Repeat interval:" Width="100" Height="22" FontSize="10" Margin="185,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource BooleanToVisibility}}"/>
+                    <ComboBox x:Name="IntervalBox" Width="100" Height="20" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="275,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource BooleanToVisibility}}">
+                        <ComboBoxItem Content="Day"/>
+                        <ComboBoxItem Content="Week"/>
+                        <ComboBoxItem Content="Month"/>
+                    </ComboBox>
                 </Grid>
             </Border>
             <Button x:Name="Confirm" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Width="40" Height="40" Margin="0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Command="{Binding Confirm}">
@@ -37,6 +48,8 @@
                         <Binding ElementName="TitleBox" Path="Text"/>
                         <Binding ElementName="DeadlineSelector" Path="SelectedDate"/>
                         <Binding ElementName="PriorityBox" Path="IsChecked"/>
+                        <Binding ElementName="RepeatBox" Path="IsChecked"/>
+                        <Binding ElementName="IntervalBox" Path="SelectedValue"/>
                     </MultiBinding>
                 </Button.CommandParameter>
                 <Image Source="Graphics/plus.png"/>
