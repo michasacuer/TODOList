@@ -8,8 +8,34 @@ namespace TODOList
 {
     public class SubTaskViewModel:BaseViewModel
     {
-        public Guid id { get; set; }
-        public string Title { get; set; }
+        TODOSubTask subTask = new TODOSubTask();
+
+        public Guid id
+        {
+            get
+            {
+                return subTask.id;
+            }
+            set
+            {
+                if (value != null)
+                    subTask.id = value;
+                OnPropertyChange("id");
+            }
+        }
+        public string Title
+        {
+            get
+            {
+                return subTask.Title;
+            }
+            set
+            {
+                if (value != null)
+                    subTask.Title = value;
+                OnPropertyChange("Title");
+            }
+        }
         private bool isCompleted;
         public bool IsCompleted
         {

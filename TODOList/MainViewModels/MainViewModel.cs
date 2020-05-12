@@ -22,8 +22,10 @@ namespace TODOList
 
         public ICommand WindowClosing { get; set; }
         public ICommand PriorityChange { get; set; }
+        public ICommand OpenInfo { get; set; }
         #endregion
 
+        #region Fields and Properties
         public string XmlFilePath = "TasksSerialization.xml";
 
         private int index;
@@ -59,7 +61,9 @@ namespace TODOList
             get { return tasks ?? (tasks = new ObservableCollection<TaskViewModel>()); }
             set { tasks = value; OnPropertyChange("Tasks"); }
         }
+        #endregion
 
+        #region Constructor and Instance
         public static MainViewModel Instance = new MainViewModel();
 
         /// <summary>
@@ -77,6 +81,7 @@ namespace TODOList
             Minimize = new RelayCommand<Window>(minimize);
             WindowClosing = new NormalCommand(Closing);
             PriorityChange = new NormalCommand(ChangePriority);
+            OpenInfo = new NormalCommand(openInfo);
 
             if (File.Exists(XmlFilePath))
             {
@@ -85,7 +90,6 @@ namespace TODOList
             else
             {
                 Tasks = new ObservableCollection<TaskViewModel>();
-                Tasks.Add(new TaskViewModel("sd", DateTime.Now, DateTime.Now, true));
             }
 
             //RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
@@ -93,7 +97,9 @@ namespace TODOList
             //registryKey.SetValue("ApplicationName", System.Reflection.Assembly.GetExecutingAssembly().Location);
 
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Open NewTask window to add task or subtask
         /// </summary>
@@ -189,6 +195,14 @@ namespace TODOList
             SaveToXml();
         }
         /// <summary>
+        /// Method to open InfoWindow
+        /// </summary>
+        private void openInfo()
+        {
+            InfoWindow info = new InfoWindow();
+            info.ShowDialog();
+        }
+        /// <summary>
         /// Serialize tasks
         /// </summary>
         private void SaveToXml()
@@ -212,5 +226,6 @@ namespace TODOList
             Tasks = reader.Deserialize(file) as ObservableCollection<TaskViewModel>;
             file.Close();
         }
+        #endregion
     }
 }

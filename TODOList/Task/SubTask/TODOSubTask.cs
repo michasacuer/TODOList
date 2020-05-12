@@ -8,8 +8,9 @@ namespace TODOList
 {
     class TODOSubTask
     {
-        public string Title { get; set; }
-        public bool IsCompleted { get; set; }
+        public Guid id;
+        public string Title;
+        public bool IsCompleted;
 
     }
 }
