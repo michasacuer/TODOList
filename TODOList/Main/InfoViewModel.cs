@@ -42,7 +42,7 @@ namespace TODOList
         /// <param name="window">Determines window to close</param>
         private void CloseWindow(Window window)
         {
-            window.Close();
+            if (window != null) window.Close();
         }
         #endregion
 

@@ -61,6 +61,24 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.Apis, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.45.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.45.0\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.45.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Calendar.v3, Version=1.45.0.1928, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Calendar.v3.1.45.0.1928\lib\net45\Google.Apis.Calendar.v3.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.45.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.45.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="Hangfire.Core, Version=1.7.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Core.1.7.11\lib\net46\Hangfire.Core.dll</HintPath>
     </Reference>
@@ -96,16 +114,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converters\BooleanToVisibility.cs" />
-    <Compile Include="MainViewModels\InfoViewModel.cs" />
+    <Compile Include="Converters\booleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="OAuth2.0\GoogleCalendarService.cs" />
+    <Compile Include="OAuth2.0\GoogleAuth.cs" />
+    <Compile Include="Main\InfoViewModel.cs" />
     <Compile Include="InfoWindow.xaml.cs">
       <DependentUpon>InfoWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainViewModels\BaseViewModel.cs" />
-    <Compile Include="Task\SubTask\TODOSubTask.cs" />
-    <Compile Include="Task\MainTask\TODOTask.cs" />
-    <Compile Include="Task\SubTask\SubTaskViewModel.cs" />
-    <Compile Include="MainViewModels\MainViewModel.cs" />
+    <Compile Include="Main\BaseViewModel.cs" />
+    <Compile Include="Task\Model\TODOTask.cs" />
+    <Compile Include="Main\MainViewModel.cs" />
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\MultiCommandConverter.cs" />
@@ -124,7 +143,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Task\MainTask\TaskViewModel.cs" />
+    <Compile Include="Task\View\TaskViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -157,6 +176,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="client_id.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="credentials.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -175,10 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Graphics\list.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Graphics\starC.png" />
-    <Resource Include="Graphics\starW.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Graphics\plus.png" />
@@ -205,6 +224,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Graphics\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\addUser.png" />
+    <Resource Include="Graphics\refresh.png" />
+    <Resource Include="Graphics\removeUser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\google.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\google_black.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

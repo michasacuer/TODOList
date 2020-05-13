@@ -11,7 +11,8 @@
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     </Window.Resources>
     <StackPanel>
         <StackPanel Orientation="Horizontal" Height="30" Background="#3F3F3F">
@@ -25,30 +26,28 @@
         <Grid Height="370">
             <Label Content="Title:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="35" Height="25" Margin="5,5"/>
             <TextBox x:Name="TitleBox" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="25" Margin="50,5"/>
-            <Border x:Name="Extended" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50" Width="390" Height="220">
+            <Label Content="Location:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Height="25" Margin="5,35"/>
+            <TextBox x:Name="LocationBox" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="25" Margin="65,35"/>
+            <Border x:Name="Extended" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,70" Width="390" Height="220">
                 <Grid>
-                    <Calendar x:Name="DeadlineSelector" VerticalAlignment="Top" HorizontalAlignment="Left" Width="180" Height="165" FirstDayOfWeek="Monday" Background="LightGray" Foreground="#FF2C2C2C" BorderBrush="Black"/>
+                    <Calendar x:Name="DeadlineSelector" IsEnabled="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource InverseBooleanConverter}}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="180" Height="165" FirstDayOfWeek="Monday" Background="LightGray" Foreground="#FF2C2C2C" BorderBrush="Black"/>
                     <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Deadline:" Width="60" Height="25" Margin="185,3,0,0"/>
                     <TextBlock FontSize="15" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding ElementName=DeadlineSelector,Path=SelectedDate,Converter={x:Static local:DateConverter.Instance}}" Width="120" Height="25" Margin="255,3,0,0"/>
-                    <CheckBox x:Name="PriorityBox" Content="Priority" Width="100" Height="25" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="185,40,0,0"/>
                     <CheckBox x:Name="RepeatBox" Content="Repeat" Width="100" Height="25" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="185,65,0,0" />
-                    <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Repeat interval:" Width="80" Height="22" FontSize="10" Margin="185,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource BooleanToVisibility}}"/>
-                    <TextBlock x:Name="IntervalValue" Text="{Binding ElementName=IntervalSlider,Path=Value}" Width="20" Height="20" FontSize="14" Margin="160,-20,0,0" TextAlignment="Center" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource BooleanToVisibility}}"/>
-                    <Slider x:Name="IntervalSlider" Maximum="31" Minimum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="100" Height="20" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="290,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource BooleanToVisibility}}"/>
-                    <CheckBox x:Name="SyncWithGoogle" Content="Sync with Google Calendar" FontSize="15" Width="200" Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,150,0,0"/>
+                    <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Repeat interval:" Width="80" Height="22" FontSize="10" Margin="185,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}"/>
+                    <TextBlock x:Name="IntervalValue" Text="{Binding ElementName=IntervalSlider,Path=Value}" Width="20" Height="20" FontSize="14" Margin="160,-20,0,0" TextAlignment="Center" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}"/>
+                    <Slider x:Name="IntervalSlider" Maximum="31" Minimum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="100" Height="20" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="290,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}"/>
                 </Grid>
             </Border>
             <Button x:Name="Confirm" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Width="40" Height="40" Margin="0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Command="{Binding Confirm}">
                 <Button.CommandParameter>
                     <MultiBinding Converter="{x:Static local:MultiCommandConverter.Instance}">
                         <Binding ElementName="NewTaskWindow"/>
-                        <Binding ElementName="Confirm" Path="Tag"/>
                         <Binding ElementName="TitleBox" Path="Text"/>
-                        <Binding ElementName="DeadlineSelector" Path="SelectedDate"/>
-                        <Binding ElementName="PriorityBox" Path="IsChecked"/>
+                        <Binding ElementName="LocationBox" Path="Text"/>
                         <Binding ElementName="RepeatBox" Path="IsChecked"/>
                         <Binding ElementName="IntervalBox" Path="SelectedValue"/>
-                        <Binding ElementName="SyncWithGoogle" Path="IsChecked"/>
+                        <Binding ElementName="DeadlineSelector" Path="SelectedDate"/>
                     </MultiBinding>
                 </Button.CommandParameter>
                 <Image Source="Graphics/plus.png"/>

@@ -4,14 +4,13 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace TODOList
 {
     internal class MainViewModel:BaseViewModel
     {
         #region Commands
-        public ICommand SelectListItem { get; set; }
-        public ICommand SelectSubListItem { get; set; }
         public ICommand Open { get; set; }
         public ICommand MarkAsCompleted { get; set; }
         public ICommand Remove { get; set; }
@@ -21,7 +20,7 @@ namespace TODOList
         public ICommand Confirm { get; set; }
 
         public ICommand WindowClosing { get; set; }
-        public ICommand PriorityChange { get; set; }
+        public ICommand SyncChange { get; set; }
         public ICommand OpenInfo { get; set; }
         #endregion
 
@@ -72,15 +71,12 @@ namespace TODOList
         public MainViewModel()
         {
             Selected = null;
-            Confirm = new RelayCommand<Object[]>(NewTask);
+            Confirm = new RelayCommand<List<object>>(NewTask);
             Open = new RelayCommand<string>(OpenWindow);
-            MarkAsCompleted = new RelayCommand<Int32>(_MarkAsCompleted);
-            Remove = new RelayCommand<Int32>(_Remove);
             FinishTask = new NormalCommand(_FinishTask);
             CloseApp = new RelayCommand<Window>(Close);
             Minimize = new RelayCommand<Window>(minimize);
             WindowClosing = new NormalCommand(Closing);
-            PriorityChange = new NormalCommand(ChangePriority);
             OpenInfo = new NormalCommand(openInfo);
 
             if (File.Exists(XmlFilePath))
@@ -116,53 +112,19 @@ namespace TODOList
         /// Add new task or subtask
         /// </summary>
         /// <param name="param">Object array with parameters to add new items</param>
-        public void NewTask(object[] param)
+        public void NewTask(List<object> param)
         {
-            if (param[1].ToString() == "SubItem")
-            {
-                
-                Tasks[Index].SubItems.Add(new SubTaskViewModel(param[2].ToString()));
-                Tasks[Index].CheckCompletion();
-            }
-            else
-            {
-                Tasks.Add(new TaskViewModel(param[2].ToString(), DateTime.Now, Convert.ToDateTime(param[3]), (bool)param[4]));
-            }
             (param[0] as Window).Close();
-        }
-
-        /// <summary>
-        /// Mark subtask as completed
-        /// </summary>
-        /// <param name="ind">Determines id of subtask to mark</param>
-        private void _MarkAsCompleted(int ind)
-        {
-            if (ind > -1)
-            {
-                Tasks[Index].SubItems[ind].IsCompleted = true;
-                Tasks[Index].CheckCompletion();
-            }
-            
-        }
-        /// <summary>
-        /// Remove subtask
-        /// </summary>
-        /// <param name="index">Determines id of subtask to remove</param>
-        private void _Remove(int index)
-        {
-            if (index > -1)
-            {
-                Tasks[Index].SubItems.RemoveAt(index);
-                Tasks[Index].CheckCompletion();
-            }
-            
+            param.RemoveAt(0);
+            Tasks.Add(new TaskViewModel(param));
         }
         /// <summary>
         /// Finish and delete task from list
         /// </summary>
         private void _FinishTask()
         {
-            Tasks.RemoveAt(Index);
+            if(Index>=0)
+                Tasks[Index].IsCompleted=true;
         }
         /// <summary>
         /// Set window to minimize state
@@ -179,13 +141,6 @@ namespace TODOList
         private void Close(Window window)
         {
             if (window != null) window.Close();
-        }
-        /// <summary>
-        /// Change priority of selected task
-        /// </summary>
-        private void ChangePriority()
-        {
-            Tasks[Index].priority = Tasks[Index].priority==true?false:true;
         }
         /// <summary>
         /// Save tasks to xml file while closing program

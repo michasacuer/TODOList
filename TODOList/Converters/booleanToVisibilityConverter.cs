@@ -13,7 +13,7 @@ namespace TODOList
     /// Converter that convert boolean variable from Task class
     /// on control visibility property
     /// </summary>
-    class BooleanToVisibility : IValueConverter
+    class booleanToVisibilityConverter : IValueConverter
     {
         /// <summary>
         /// Convert boolean to visibility
