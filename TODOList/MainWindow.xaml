@@ -7,12 +7,15 @@
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="600" WindowStyle="None" ResizeMode="NoResize">
+        Title="MainWindow" WindowStartupLocation="CenterOwner" Height="650" Width="600" WindowStyle="None" ResizeMode="NoResize">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding WindowClosing}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
+    <Window.Resources>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </Window.Resources>
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
@@ -61,49 +64,43 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+
             </StackPanel>
-            <StackPanel Grid.Column="1" Background="DarkGray">
-                <Grid>
-                    <Label Content="Title:" Width="35" HorizontalAlignment="Left" Margin="10,10"/>
-                    <TextBlock Text="{Binding Selected.Title}" Width="180" HorizontalAlignment="Left" FontSize="18" TextAlignment="Center" Margin="60,10"/>
+            <StackPanel Grid.Column="1" Background="DarkGray" IsEnabled="{Binding ElementName=TasksPanel,Path=SelectedIndex,Converter={x:Static local:IndexToEnableConverter.instance}}">
+                <Grid Height="66">
+                    <Label Content="Title:" Width="35" HorizontalAlignment="Left" Margin="10,10,0,28"/>
+                    <TextBlock Text="{Binding Selected.Title}" Width="180" HorizontalAlignment="Left" FontSize="14" TextAlignment="Center" Margin="60,10,0,28"/>
+                    <Label Content="Location:" Width="60" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,0,0"/>
+                    <TextBlock Text="{Binding Selected.Location}" Width="160" HorizontalAlignment="Left" FontSize="14" VerticalAlignment="Top" Margin="75,45,0,0"/>
                 </Grid>
                 <Grid Margin="0,20" Height="80">
-                    <Label Content="Added in:" Width="60" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    <Label Content="Deadline:" Width="60" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,25"/>
-                    <TextBlock Text="{Binding Selected.AddDateString}" Width="100" Height="30" FontSize="18" Margin="70,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    <TextBlock Text="{Binding Selected.DeadlineString}" Width="100" Height="30" FontSize="18" Margin="70,25" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    <Label Content="Completed:" FontSize="8" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,55,0,0"/>
-                    <TextBlock Text="{Binding Selected.CompletedString}" Width="50" Height="30" FontSize="10" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="50,55,0,0"/>
+                    <Label Content="Date:" Width="40" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Label Content="Interval:" Width="55" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,50,0,0" RenderTransformOrigin="0.541,1.104"/>
+                    <TextBlock Text="{Binding Selected.DateString}" TextWrapping="Wrap" Width="150" Height="50" FontSize="14" Margin="45,0,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{Binding Selected.Interval}" Width="180" Height="30" FontSize="14" Margin="60,50,0,0" TextAlignment="Center" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                 </Grid>
                 <WrapPanel/>
-                <Label Content="Connected users:" Width="100" Height="30"/>
-                <ListView x:Name="ConnectedUsersPanel" Height="100" Width="230">
-                    <ListView.ItemTemplate>
-                        <HierarchicalDataTemplate>
-                            <WrapPanel>
-                                <Ellipse Width="30" Height="30" >
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding}"/>
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <TextBlock Text="{Binding}" FontSize="18" Width="155" Height="30" TextAlignment="Center"/>
-                            </WrapPanel>
-                        </HierarchicalDataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <Label Content="Participants:" Width="75" Height="30"/>
+                <ListView x:Name="ConnectedUsersPanel" ItemsSource="{Binding Selected.Attendees}" Height="100" Width="230"/>
                 <Label Content="Description:" Width="75" Height="30"/>
-                <RichTextBox x:Name="Description" Height="170" Width="230" DataContext="{Binding Selected.Description,Mode=TwoWay}"/>
-                <WrapPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,75">
-                    <Button x:Name="GoogleBtn" ToolTip="Sync with google calendar" Margin="5,0" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding GoogleSync}" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <TextBox x:Name="Description" Height="170" Width="230" Text="{Binding Selected.Description, Mode=TwoWay}"/>
+                <WrapPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,65">
+                    <Button x:Name="GoogleBtn" ToolTip="Sync with google calendar" Margin="5,0" Background="Transparent" 
+                            Style="{DynamicResource Button.Hoverless}" Command="{Binding SyncChange}" Width="40" Height="40" 
+                            HorizontalAlignment="Left" VerticalAlignment="Bottom" IsEnabled="{Binding Selected.IsSynced,Converter={StaticResource InverseBooleanConverter}}">
                         <Image Source="Graphics/google.png"/>
                     </Button>
-                    <Button x:Name="SubItemBtn" ToolTip="Add new subtask" Background="Transparent" Tag="SubItem" Style="{DynamicResource Button.Hoverless}" Command="{Binding Open}" CommandParameter="{Binding Tag, ElementName=SubItemBtn}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                        <Image Source="Graphics/plus.png"/>
+                    <Button x:Name="EditTaskBtn" ToolTip="Edit task" Background="Transparent" Tag="Edit" Style="{DynamicResource Button.Hoverless}" 
+                            Command="{Binding Open}" CommandParameter="{Binding ElementName=EditTaskBtn,Path=Tag}" Width="40" Height="40" 
+                            HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <Image Source="Graphics/edit_task.png"/>
                     </Button>
-                    <Button HorizontalAlignment="Center" ToolTip="Delete selected subtask" Margin="5,0" Width="40" Height="40" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding Remove}" CommandParameter="{Binding SelectedIndex, ElementName=SubItemsPanel}">
+                    <Button HorizontalAlignment="Center" ToolTip="Add new attendee" Margin="5,0" Width="40" Height="40" Background="Transparent" 
+                            Style="{DynamicResource Button.Hoverless}" Command="{Binding AddUser}">
                         <Image Source="graphics/addUser.png"/>
                     </Button>
-                    <Button HorizontalAlignment="Center" ToolTip="Delete selected subtask" Width="40" Height="40" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding Remove}" CommandParameter="{Binding SelectedIndex, ElementName=SubItemsPanel}">
+                    <Button HorizontalAlignment="Center" ToolTip="Delete selected attendee" Width="40" Height="40" Background="Transparent" 
+                            Style="{DynamicResource Button.Hoverless}" Command="{Binding RemoveUser}" CommandParameter="{Binding SelectedIndex, ElementName=ConnectedUsersPanel}">
                         <Image Source="graphics/removeUser.png"/>
                     </Button>
                 </WrapPanel>

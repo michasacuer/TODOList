@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace TODOList
 {
@@ -56,46 +58,39 @@ namespace TODOList
             }
         }
 
-        public DateTime AddDate
+        public DateTime StartDate
         {
             get
             {
-                return task.AddDate;
+                return task.StartDate;
             }
             set
             {
                 if (value != null)
-                    task.AddDate = value;
+                    task.StartDate = value;
                 OnPropertyChange("AddDate");
             }
         }
 
-        public string AddDateString
+        public DateTime EndDate
         {
             get
             {
-                return AddDate.ToShortDateString();
-            }
-        }
-
-        public DateTime Deadline
-        {
-            get
-            {
-                return task.Deadline;
+                return task.EndDate;
             }
             set
             {
-                task.Deadline = value;
-                OnPropertyChange("Deadline");
+                if (value != null)
+                    task.EndDate = value;
+                OnPropertyChange("AddDate");
             }
         }
-        public string DeadlineString
+
+        public string DateString
         {
             get
             {
-                if (Deadline != null) return Deadline.ToShortDateString();
-                else return "-";
+                return StartDate.ToString() + " - " + EndDate.ToString();
             }
         }
 
@@ -119,7 +114,6 @@ namespace TODOList
             {
                 task.Attendees = value;
                 OnPropertyChange("Attendees");
-                OnPropertyChange("Count");
             }
         }
 
@@ -136,7 +130,7 @@ namespace TODOList
             }
         }
 
-        public int Interval
+        public string Interval
         {
             get
             {
@@ -213,6 +207,31 @@ namespace TODOList
             }
         }
 
+        public string Organizer
+        {
+            get
+            {
+                return task.Organizer;
+            }
+            set
+            {
+                task.Organizer = value;
+
+            }
+        }
+
+        public string GoogleID
+        {
+            get
+            {
+                return task.GoogleID;
+            }
+            set
+            {
+                task.GoogleID = value;
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -228,23 +247,58 @@ namespace TODOList
         /// <summary>
         /// Constructor that is used for repetitive tasks
         /// </summary>
-        /// <param name="Title">Task title</param>
-        /// <param name="AddDate">Date when task was added</param>
-        /// <param name="interval">String to set repetitive interval</param>
-        /// <param name="IsRepeated"></param>
+        /// <param name="Prop">List of properties</param>
         public TaskViewModel(List<object> Prop)
         {
             this.Id = Guid.NewGuid().ToString();
             this.Title = Prop[0].ToString();
-            this.AddDate = DateTime.Now;
-            this.Deadline = Convert.ToDateTime(null);
-            this.IsRepeated = true;
-            //this.Interval = interval;
-            Attendees = new ObservableCollection<string>();
+            this.Location = Prop[1].ToString();
+            this.IsRepeated = (bool)Prop[2];
+            this.Interval = ((ComboBoxItem)Prop[3]).Content.ToString();
+
+            this.StartDate = Convert.ToDateTime(Prop[4]);
+            this.StartDate = this.StartDate.AddHours(Convert.ToInt32(Prop[5]));
+            this.StartDate = this.StartDate.AddMinutes(Convert.ToInt32(Prop[6]));
+
+            this.EndDate = Convert.ToDateTime(Prop[4]);
+            this.EndDate = this.EndDate.AddHours(Convert.ToInt32(Prop[7]));
+            this.EndDate = this.EndDate.AddMinutes(Convert.ToInt32(Prop[8]));
+
+            if (StartDate > EndDate) EndDate = StartDate.AddHours(1);
+
+            this.Description = Prop[9].ToString();
+            this.IsCompleted = DateTime.Now >= EndDate ? true : false;
+            this.IsSynced = false;
+            this.Attendees = new ObservableCollection<string>();
+            SetNextNotifyDate();
         }
 
         #endregion
         #region Methods
+        /// <summary>
+        /// Set a date to next notify
+        /// </summary>
+        public void SetNextNotifyDate()
+        {
+            switch (Interval)
+            {
+                case "Every day":
+                    this.NextNotifyDate.AddDays(1);
+                    break;
+                case "Every week":
+                    this.NextNotifyDate.AddDays(7);
+                    break;
+                case "Every month":
+                    this.NextNotifyDate.AddMonths(1);
+                    break;
+            }
+            
+        }
+
+        public void CheckDate()
+        {
+
+        }
         #endregion
     }
 }

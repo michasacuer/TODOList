@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="InfoWindow" x:Name="infoWindow" Height="350" Width="400" ResizeMode="NoResize" WindowStyle="None" ShowInTaskbar="False">
+        Title="InfoWindow" x:Name="infoWindow" WindowStartupLocation="CenterOwner" Height="350" Width="400" ResizeMode="NoResize" WindowStyle="None" ShowInTaskbar="False">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
@@ -18,6 +18,6 @@
                 </Button>
             </WrapPanel>
         </StackPanel>
-        <TextBlock Text="{Binding Text}" Width="250" Height="250" Margin="0,30,0,0" FontSize="20" TextAlignment="Center"/>
+        <TextBlock Text="{Binding Text}" Width="250" Height="250" TextWrapping="Wrap" Margin="0,30,0,0" FontSize="20" TextAlignment="Center"/>
     </StackPanel>
 </Window>

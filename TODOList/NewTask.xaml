@@ -2,10 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ControlLib="clr-namespace:ControlLib;assembly=NumericUpDown"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="NewTask" Height="400" Width="400" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="NewTask" WindowStartupLocation="CenterOwner" Height="400" Width="400" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
@@ -28,15 +29,34 @@
             <TextBox x:Name="TitleBox" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="25" Margin="50,5"/>
             <Label Content="Location:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Height="25" Margin="5,35"/>
             <TextBox x:Name="LocationBox" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Height="25" Margin="65,35"/>
-            <Border x:Name="Extended" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,70" Width="390" Height="220">
+            <Border x:Name="Extended" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,70" Width="390" Height="250">
                 <Grid>
-                    <Calendar x:Name="DeadlineSelector" IsEnabled="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource InverseBooleanConverter}}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="180" Height="165" FirstDayOfWeek="Monday" Background="LightGray" Foreground="#FF2C2C2C" BorderBrush="Black"/>
-                    <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Deadline:" Width="60" Height="25" Margin="185,3,0,0"/>
-                    <TextBlock FontSize="15" VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding ElementName=DeadlineSelector,Path=SelectedDate,Converter={x:Static local:DateConverter.Instance}}" Width="120" Height="25" Margin="255,3,0,0"/>
-                    <CheckBox x:Name="RepeatBox" Content="Repeat" Width="100" Height="25" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="185,65,0,0" />
-                    <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Repeat interval:" Width="80" Height="22" FontSize="10" Margin="185,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}"/>
-                    <TextBlock x:Name="IntervalValue" Text="{Binding ElementName=IntervalSlider,Path=Value}" Width="20" Height="20" FontSize="14" Margin="160,-20,0,0" TextAlignment="Center" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}"/>
-                    <Slider x:Name="IntervalSlider" Maximum="31" Minimum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="100" Height="20" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="290,90,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}"/>
+                    <GroupBox Header="Task start" VerticalAlignment="Top" HorizontalAlignment="Left" Width="180" Height="75" Margin="0,33,0,0" BorderThickness="0">
+                        <Grid>
+                            <Label Width="40" Content="Time:" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                            <ControlLib:NumericUpDown x:Name="StartHours" MinValue="00" MaxValue="23" Width="25" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40,5" ToolTip="Hours"/>
+                            <ControlLib:NumericUpDown x:Name="StartMinutes" MinValue="00" MaxValue="59" Width="25" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5" ToolTip="Minutes"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Task end" VerticalAlignment="Top" HorizontalAlignment="Left" Width="180" Height="75" Margin="0,100,0,0" BorderThickness="0">
+                        <Grid>
+                            <Label Width="40" Content="Time:" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                            <ControlLib:NumericUpDown x:Name="EndHours" MinValue="00" MaxValue="23" Width="25" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40,5" ToolTip="Hours"/>
+                            <ControlLib:NumericUpDown x:Name="EndMinutes" MinValue="00" MaxValue="59" Width="25" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="70,5" ToolTip="Minutes"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <CheckBox x:Name="RepeatBox" Content="Repeat" Width="100" Height="25" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="185,1,0,0" />
+                    <Label VerticalAlignment="Top" HorizontalAlignment="Left" Content="Repeat interval:" Width="80" Height="22" FontSize="10" Margin="210,26,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}"/>
+                    <ComboBox x:Name="IntervalSelector" Width="100" Height="20" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="290,26,0,0" Visibility="{Binding ElementName=RepeatBox,Path=IsChecked,Converter={StaticResource booleanToVisibilityConverter}}" SelectedIndex="0">
+                        <ComboBoxItem>None</ComboBoxItem>
+                        <ComboBoxItem>Every day</ComboBoxItem>
+                        <ComboBoxItem>Every week</ComboBoxItem>
+                        <ComboBoxItem>Every month</ComboBoxItem>
+                    </ComboBox>
+                    <TextBox x:Name="Desc" Height="130" FontSize="15" VerticalAlignment="Bottom" Margin="180,0,0,20"/>
+                    <Label Width="40" Content="Date:" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="6,3,0,0"/>
+                    <DatePicker x:Name="DateSelector" VerticalAlignment="Top" HorizontalAlignment="Left" Width="120" Height="22" FirstDayOfWeek="Monday" Margin="46,4,0,0" Background="LightGray" Foreground="#FF2C2C2C" BorderBrush="Black"/>
                 </Grid>
             </Border>
             <Button x:Name="Confirm" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Width="40" Height="40" Margin="0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Command="{Binding Confirm}">
@@ -46,8 +66,14 @@
                         <Binding ElementName="TitleBox" Path="Text"/>
                         <Binding ElementName="LocationBox" Path="Text"/>
                         <Binding ElementName="RepeatBox" Path="IsChecked"/>
-                        <Binding ElementName="IntervalBox" Path="SelectedValue"/>
-                        <Binding ElementName="DeadlineSelector" Path="SelectedDate"/>
+                        <Binding ElementName="IntervalSelector" Path="SelectedItem"/>
+                        <Binding ElementName="DateSelector" Path="SelectedDate"/>
+                        <Binding ElementName="StartHours" Path="Value"/>
+                        <Binding ElementName="StartMinutes" Path="Value"/>
+                        <Binding ElementName="EndHours" Path="Value"/>
+                        <Binding ElementName="EndMinutes" Path="Value"/>
+                        <Binding ElementName="Desc" Path="Text"/>
+                        <Binding ElementName="Confirm" Path="Tag"/>
                     </MultiBinding>
                 </Button.CommandParameter>
                 <Image Source="Graphics/plus.png"/>
