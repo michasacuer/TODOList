@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="AddParticipantsWindow" x:Name="AddAttendeeWindow" WindowStartupLocation="CenterOwner" Height="140" Width="350" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="AddParticipantsWindow" x:Name="AddAttendeeWindow" WindowStartupLocation="CenterScreen" Height="140" Width="350" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>

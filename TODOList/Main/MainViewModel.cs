@@ -26,6 +26,7 @@ namespace TODOList
         public ICommand OpenInfo { get; set; }
         public ICommand AddUser { get; set; }
         public ICommand RemoveUser { get; set; }
+        public ICommand DateRange { get; set; }
         #endregion
 
         #region Fields and Properties
@@ -42,7 +43,7 @@ namespace TODOList
             }
             set
             {
-                index = value;
+                index = Main.IndexOf(tasks[value]);
                 OnPropertyChange("Index");
             }
         }
@@ -66,6 +67,14 @@ namespace TODOList
             get { return tasks ?? (tasks = new ObservableCollection<TaskViewModel>()); }
             set { tasks = value; OnPropertyChange("Tasks"); }
         }
+
+        //Variable to handle main collection when user select range of data
+        private ObservableCollection<TaskViewModel> main;
+        public ObservableCollection<TaskViewModel> Main
+        {
+            get { return main ?? (main = new ObservableCollection<TaskViewModel>()); }
+            set { main = value; OnPropertyChange("Temp"); }
+        }
         #endregion
 
         #region Constructor and Instance
@@ -88,6 +97,7 @@ namespace TODOList
             AddUser = new NormalCommand(AddParticipants);
             RemoveUser = new RelayCommand<Int32>(RemoveParticipants);
             SyncChange = new NormalCommand(SyncEvent);
+            DateRange = new RelayCommand<string>(SetDateRange);
 
             calendarService = new GoogleCalendarService();
 
@@ -97,17 +107,55 @@ namespace TODOList
             }
             else
             {
-                Tasks = new ObservableCollection<TaskViewModel>();
+                Main = new ObservableCollection<TaskViewModel>();
             }
+
+            SetDateRange("all");
 
             //RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
             //registryKey.SetValue("TODOList", System.Reflection.Assembly.GetExecutingAssembly().Location);
 
         }
+
+
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Select task within selected range
+        /// </summary>
+        /// <param name="range">Capabilities(All,this day,next day,this week,next week,this month,next month)</param>
+        public void SetDateRange(string range)
+        {
+            Main = new ObservableCollection<TaskViewModel>(Main.OrderBy(i => i.StartDate).ToList());
+            switch (range)
+            {
+                case "all":
+                    Tasks = Main;
+                    break;
+                case "this day":
+                    Tasks = new ObservableCollection<TaskViewModel>(Main.Where(i => i.StartDate.Day == DateTime.Now.Day).ToList());
+                    break;
+                case "next day":
+                    Tasks = new ObservableCollection<TaskViewModel>(Main.Where(i => i.StartDate.Day == DateTime.Now.AddDays(1).Day).ToList());
+                    break;
+                case "this week":
+                    Tasks = new ObservableCollection<TaskViewModel>(Main.Where(i => (i.StartDate >= DateTime.Now 
+                    && i.StartDate <= DateTime.Now.AddDays(7))).ToList());
+                    break;
+                case "next week":
+                    Tasks = new ObservableCollection<TaskViewModel>(Main.Where(i => (i.StartDate >= DateTime.Now.AddDays(7) 
+                    && i.StartDate <= DateTime.Now.AddDays(14))).ToList());
+                    break;
+                case "this month":
+                    Tasks = new ObservableCollection<TaskViewModel>(Main.Where(i => i.StartDate.Month == DateTime.Now.Month).ToList());
+                    break;
+                case "next month":
+                    Tasks = new ObservableCollection<TaskViewModel>(Main.Where(i => i.StartDate.Month == DateTime.Now.AddMonths(1).Month).ToList());
+                    break;
+            }
+        }
         /// <summary>
         /// Add participant to selected event
         /// </summary>
@@ -122,16 +170,16 @@ namespace TODOList
         /// <param name="index"></param>
         private void RemoveParticipants(int index)
         {
-            if (index > -1) Tasks[Index].Attendees.RemoveAt(index);
+            if (index > -1) Main[Index].Attendees.RemoveAt(index);
             else MessageBox.Show("First choose mail to delete!", "Wrong index selected!", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         private void SyncEvent()
         {
-            calendarService.InsertIntoCalendar(tasks[Index]);
-            if (calendarService.CheckIfEventExists(tasks[Index]))
+            calendarService.InsertIntoCalendar(Main[Index]);
+            if (calendarService.CheckIfEventExists(Main[Index]))
             {
                 MessageBox.Show("Event successful synced with Google Calendar!","Synced!",MessageBoxButton.OK, MessageBoxImage.Information);
-                tasks[Index].IsSynced = true;
+                Main[Index].IsSynced = true;
             }
             else
             {
@@ -144,8 +192,10 @@ namespace TODOList
         private void RemoveSelected()
         {
             if (Index >= 0)
-                if (Tasks[Index].IsSynced) calendarService.RemoveEvent(tasks[Index]);
-                Tasks.RemoveAt(Index);
+                if (Main[Index].IsSynced) calendarService.RemoveEvent(Main[Index]);
+            Main.RemoveAt(Index);
+
+            SetDateRange("all");
         }
         /// <summary>
         /// Open NewTask window to add task or subtask
@@ -157,18 +207,20 @@ namespace TODOList
             AddNew.Confirm.Tag = tag;
             if (tag == "Edit")
             {
-                AddNew.TitleBox.Text = tasks[Index].Title;
-                AddNew.LocationBox.Text = tasks[Index].Location;
-                AddNew.DateSelector.SelectedDate = tasks[Index].StartDate;
-                AddNew.StartHours.Value = tasks[Index].StartDate.Hour;
-                AddNew.StartMinutes.Value = tasks[Index].StartDate.Minute;
-                AddNew.EndHours.Value = tasks[Index].EndDate.Hour;
-                AddNew.EndMinutes.Value = tasks[Index].EndDate.Minute;
-                AddNew.RepeatBox.IsChecked = tasks[Index].IsRepeated;
-                AddNew.IntervalSelector.SelectedItem = tasks[Index].Interval;
-                AddNew.Desc.Text = tasks[Index].Description;
+                AddNew.TitleBox.Text = Main[Index].Title;
+                AddNew.LocationBox.Text = Main[Index].Location;
+                AddNew.DateSelector.SelectedDate = Main[Index].StartDate;
+                AddNew.StartHours.Value = Main[Index].StartDate.Hour;
+                AddNew.StartMinutes.Value = Main[Index].StartDate.Minute;
+                AddNew.EndHours.Value = Main[Index].EndDate.Hour;
+                AddNew.EndMinutes.Value = Main[Index].EndDate.Minute;
+                AddNew.RepeatBox.IsChecked = Main[Index].IsRepeated;
+                AddNew.IntervalSelector.SelectedItem = Main[Index].Interval;
+                AddNew.Desc.Text = Main[Index].Description;
             }
             AddNew.ShowDialog();
+
+            
         }
         /// <summary>
         /// Add new task or subtask
@@ -179,10 +231,12 @@ namespace TODOList
             (param[0] as Window).Close();
             List<object> classParam=param.ToList();
             classParam.RemoveAt(0);
-            if (classParam[4] == null) classParam[4] = DateTime.Now.ToShortDateString();
+            if (classParam[4] == null) { classParam[4] = DateTime.Now.ToShortDateString(); classParam[5]=DateTime.Now.Hour + 1; }
             if (classParam[0].ToString() == String.Empty) classParam[0] = new StringBuilder("(Empty subject)");
             if (classParam[10].ToString() == "Edit") editTask(classParam);
-            else Tasks.Add(new TaskViewModel(classParam));
+            else Main.Add(new TaskViewModel(classParam));
+
+            SetDateRange("all");
         }
         /// <summary>
         /// Finish and delete task from list
@@ -190,7 +244,9 @@ namespace TODOList
         private void _FinishTask()
         {
             if(Index>=0)
-                Tasks[Index].IsCompleted=true;
+                Main[Index].IsCompleted=true;
+
+            SetDateRange("all");
         }
         /// <summary>
         /// Set window to minimize state
@@ -230,46 +286,52 @@ namespace TODOList
         /// <param name="param"></param>
         private void editTask(List<object> Prop)
         {
-            tasks[Index].Title = Prop[0].ToString();
-            tasks[Index].Location = Prop[1].ToString();
-            tasks[Index].IsRepeated = (bool)Prop[2];
-            tasks[Index].Interval = ((ComboBoxItem)Prop[3]).Content.ToString();
+            Main[Index].Title = Prop[0].ToString();
+            Main[Index].Location = Prop[1].ToString();
+            Main[Index].IsRepeated = (bool)Prop[2];
+            Main[Index].Interval = ((ComboBoxItem)Prop[3]).Content.ToString();
 
-            tasks[Index].StartDate = Convert.ToDateTime(Prop[4]);
-            tasks[Index].StartDate = tasks[Index].StartDate.AddHours(Convert.ToInt32(Prop[5]));
-            tasks[Index].StartDate = tasks[Index].StartDate.AddMinutes(Convert.ToInt32(Prop[6]));
+            Main[Index].StartDate = Convert.ToDateTime(Prop[4]);
+            Main[Index].StartDate = Main[Index].StartDate.AddHours(Convert.ToInt32(Prop[5]));
+            Main[Index].StartDate = Main[Index].StartDate.AddMinutes(Convert.ToInt32(Prop[6]));
 
-            tasks[Index].EndDate = Convert.ToDateTime(Prop[4]);
-            tasks[Index].EndDate = tasks[Index].EndDate.AddHours(Convert.ToInt32(Prop[7]));
-            tasks[Index].EndDate = tasks[Index].EndDate.AddMinutes(Convert.ToInt32(Prop[8]));
+            Main[Index].EndDate = Convert.ToDateTime(Prop[4]);
+            Main[Index].EndDate = Main[Index].EndDate.AddHours(Convert.ToInt32(Prop[7]));
+            Main[Index].EndDate = Main[Index].EndDate.AddMinutes(Convert.ToInt32(Prop[8]));
 
-            if (tasks[Index].StartDate > tasks[Index].EndDate) tasks[Index].EndDate = tasks[Index].StartDate.AddHours(1);
+            if (Main[Index].StartDate > Main[Index].EndDate) Main[Index].EndDate = Main[Index].StartDate.AddHours(1);
 
-            tasks[Index].SetNextNotifyDate();
-            if (tasks[Index].IsSynced) calendarService.EditEvent(tasks[Index]);
+            Main[Index].SetNextNotifyDate();
+            if (Main[Index].IsSynced) calendarService.EditEvent(Main[Index]);
+
+            SetDateRange("all");
         }
+
+
+        #endregion
+        #region Serialization
         /// <summary>
         /// Serialize tasks
         /// </summary>
-        private void SaveToXml()
+        public void SaveToXml()
         {
             System.Xml.Serialization.XmlSerializer writer =
                 new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<TaskViewModel>));
 
             var path = XmlFilePath;
             FileStream file = System.IO.File.Create(path);
-            writer.Serialize(file, Tasks);
+            writer.Serialize(file, main);
             file.Close();
         }
         /// <summary>
         /// Deserialize tasks
         /// </summary>
-        private void LoadFromXml()
+        public void LoadFromXml()
         {
             System.Xml.Serialization.XmlSerializer reader =
                 new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<TaskViewModel>));
             System.IO.StreamReader file = new StreamReader(XmlFilePath);
-            Tasks = reader.Deserialize(file) as ObservableCollection<TaskViewModel>;
+            main = reader.Deserialize(file) as ObservableCollection<TaskViewModel>;
             file.Close();
         }
         #endregion

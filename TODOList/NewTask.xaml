@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="NewTask" WindowStartupLocation="CenterOwner" Height="400" Width="400" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="NewTask" WindowStartupLocation="CenterScreen" Height="400" Width="400" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>

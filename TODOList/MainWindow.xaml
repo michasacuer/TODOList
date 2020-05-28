@@ -7,7 +7,7 @@
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
-        Title="MainWindow" WindowStartupLocation="CenterOwner" Height="650" Width="600" WindowStyle="None" ResizeMode="NoResize">
+        Title="MainWindow" WindowStartupLocation="CenterScreen" Height="650" Width="600" WindowStyle="None" ResizeMode="NoResize">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding WindowClosing}"/>
@@ -53,7 +53,31 @@
                         </Button>
                     </WrapPanel>
                 </Border>
-                <ListBox x:Name="TasksPanel" ItemsSource="{Binding Tasks, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedItem="{Binding Selected, Mode=OneWayToSource}" SelectedIndex="{Binding Index, Mode=OneWayToSource}">
+                <WrapPanel Height="95">
+                    
+                    <Button x:Name="ThisDBtn" Tag="this day" Width="100" Height="20" FontSize="15" Content="This day" 
+                            Style="{DynamicResource Button.Hoverless}" Margin="10,10,0,10" 
+                            Command="{Binding DateRange}" CommandParameter="{Binding ElementName=ThisDBtn,Path=Tag}"/>
+                    <Button x:Name="NextDBtn" Tag="next day" Width="100" Height="20" FontSize="15" Content="Next day" 
+                            Style="{DynamicResource Button.Hoverless}" Margin="10,10,0,10" 
+                            Command="{Binding DateRange}" CommandParameter="{Binding ElementName=NextDBtn,Path=Tag}"/>
+                    <Button x:Name="ThisWBtn" Tag="this week" Width="100" Height="20" FontSize="15" Content="This week" 
+                            Style="{DynamicResource Button.Hoverless}" Margin="10,0,0,0" 
+                            Command="{Binding DateRange}" CommandParameter="{Binding ElementName=ThisWBtn,Path=Tag}"/>
+                    <Button x:Name="NextWBtn" Tag="next week" Width="100" Height="20" FontSize="15" Content="Next week" 
+                            Style="{DynamicResource Button.Hoverless}" Margin="10,0,0,0" 
+                            Command="{Binding DateRange}" CommandParameter="{Binding ElementName=NextWBtn,Path=Tag}"/>
+                    <Button x:Name="ThisMBtn" Tag="this month" Width="100" Height="20" FontSize="15" Content="This month" 
+                            Style="{DynamicResource Button.Hoverless}" Margin="10,0,0,0" 
+                            Command="{Binding DateRange}" CommandParameter="{Binding ElementName=ThisMBtn,Path=Tag}"/>
+                    <Button x:Name="NextMBtn" Tag="next month" Width="100" Height="20" FontSize="15" Content="Next month" 
+                            Style="{DynamicResource Button.Hoverless}" Margin="10,0,0,0" 
+                            Command="{Binding DateRange}" CommandParameter="{Binding ElementName=NextMBtn,Path=Tag}"/>
+                    <Button x:Name="AllBtn" Tag="all" Width="100" Height="20" FontSize="15" Content="All tasks" 
+                            Style="{DynamicResource Button.Hoverless}" Margin="120,10,0,0" 
+                            Command="{Binding DateRange}" CommandParameter="{Binding ElementName=AllBtn,Path=Tag}"/>
+                </WrapPanel>
+                <ListBox x:Name="TasksPanel" Height="485" ItemsSource="{Binding Tasks, Mode=OneWay, NotifyOnSourceUpdated=True}" SelectedItem="{Binding Selected, Mode=OneWayToSource}" SelectedIndex="{Binding Index, Mode=OneWayToSource}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <DockPanel>

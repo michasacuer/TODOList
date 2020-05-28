@@ -33,8 +33,8 @@ namespace TODOList
         {
             if (IsEmailValid(variables[0].ToString()))
             {
-                if (!MainViewModel.Instance.Tasks[index].Attendees.Contains(variables[0].ToString()))
-                    MainViewModel.Instance.Tasks[index].Attendees.Add(variables[0].ToString());
+                if (!MainViewModel.Instance.Main[index].Attendees.Contains(variables[0].ToString()))
+                    MainViewModel.Instance.Main[index].Attendees.Add(variables[0].ToString());
                 else MessageBox.Show("This user is already participate in this event!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             else

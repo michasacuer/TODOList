@@ -31,7 +31,7 @@ namespace TODOList
         public InfoViewModel()
         {
             this.close = new RelayCommand<Window>(CloseWindow);
-            Text = "Created by: Mateusz Trybuła /n Icons and graphics: https://icons8.com/icons /n @jakub.dmuchowski";
+            Text = "Created by: Mateusz Trybuła "+"Icons and graphics: https://icons8.com/icons @jakub.dmuchowski";
         }
         #endregion
 
