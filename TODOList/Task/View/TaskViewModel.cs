@@ -117,19 +117,6 @@ namespace TODOList
             }
         }
 
-        public DateTime NextNotifyDate
-        {
-            get
-            {
-                return task.NextNotifyDate;
-            }
-            set
-            {
-                task.NextNotifyDate = value;
-                OnPropertyChange("NextNotifyDate");
-            }
-        }
-
         public string Interval
         {
             get
@@ -143,15 +130,15 @@ namespace TODOList
             }
         }
 
-        public bool IsCompleted
+        public TaskStatus Status
         {
             get
             {
-                return task.IsCompleted;
+                return task.Status;
             }
             set
             {
-                task.IsCompleted = value;
+                task.Status = value;
                 OnPropertyChange("IsCompleted");
             }
         }
@@ -166,7 +153,8 @@ namespace TODOList
                 }
                 else
                 {
-                    if (IsCompleted) return "Graphics/check.png";
+                    if (Status == TaskStatus.Finished) return "Graphics/check.png";
+                    else if (Status == TaskStatus.InProgress) return "Graphics/in_progress.png";
                     else return "Graphics/square.png";
                 }
             }
@@ -267,10 +255,9 @@ namespace TODOList
             if (StartDate > EndDate) EndDate = StartDate.AddHours(1);
 
             this.Description = Prop[9].ToString();
-            this.IsCompleted = DateTime.Now >= EndDate ? true : false;
+            this.Status = DateTime.Now >= EndDate ? TaskStatus.Finished : TaskStatus.NotStarted;
             this.IsSynced = false;
             this.Attendees = new ObservableCollection<string>();
-            SetNextNotifyDate();
         }
 
         #endregion
@@ -283,21 +270,33 @@ namespace TODOList
             switch (Interval)
             {
                 case "Every day":
-                    this.NextNotifyDate.AddDays(1);
+                    this.StartDate=this.StartDate.AddDays(1);
+                    this.EndDate=this.EndDate.AddDays(1);
                     break;
                 case "Every week":
-                    this.NextNotifyDate.AddDays(7);
+                    this.StartDate = this.StartDate.AddDays(7);
+                    this.EndDate=this.EndDate.AddDays(7);
                     break;
                 case "Every month":
-                    this.NextNotifyDate.AddMonths(1);
+                    this.StartDate = this.StartDate.AddMonths(1);
+                    this.EndDate=this.EndDate.AddMonths(1);
                     break;
             }
             
         }
 
-        public void CheckDate()
+        public TaskStatus CheckDate()
         {
+            if ((this.StartDate - DateTime.Now) <= TimeSpan.FromHours(1) 
+                && (this.StartDate - DateTime.Now) > TimeSpan.FromHours(1))
+            {
+                return TaskStatus.StartingSoon;
+            }
+            else if ((DateTime.Now - this.EndDate) <= TimeSpan.FromHours(1)
+                && (DateTime.Now - this.EndDate) >= TimeSpan.FromHours(0)) return TaskStatus.Finished;
+            else if (DateTime.Now < this.EndDate && DateTime.Now >= this.StartDate) return TaskStatus.InProgress;
 
+            return TaskStatus.NotStarted;
         }
         #endregion
     }

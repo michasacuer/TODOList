@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace TODOList
 {
-    class AddParticipantsViewModel
+    public class AddParticipantsViewModel
     {
 
         #region Variable
@@ -31,35 +31,20 @@ namespace TODOList
         /// <param name="variables"></param>
         private void Add(object[] variables)
         {
-            if (IsEmailValid(variables[0].ToString()))
+            if (MailValidation.IsEmailValid(variables[0].ToString()))
             {
-                if (!MainViewModel.Instance.Main[index].Attendees.Contains(variables[0].ToString()))
-                    MainViewModel.Instance.Main[index].Attendees.Add(variables[0].ToString());
+                if (!MainCollection.Main[index].Attendees.Contains(variables[0].ToString()))
+                    AttendeeManagment.Add(MainCollection.Main[index].Attendees, variables[0].ToString());
                 else MessageBox.Show("This user is already participate in this event!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             else
             {
-                MessageBox.Show("E-mail address is not valide. Please check this and try again!", "Not valid mail", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("E-mail address is not valid. Please check this and try again!", "Not valid mail", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             ((TextBox)variables[1]).Text = String.Empty;
         }
-        /// <summary>
-        /// Checking if mail is valid
-        /// </summary>
-        /// <param name="inputEmail"></param>
-        /// <returns>True if mail is valid otherwise false</returns>
-        private static bool IsEmailValid(string inputEmail)
-        {
-            string strRegex = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
-                  @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
-                  @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
-            Regex re = new Regex(strRegex);
-            if (re.IsMatch(inputEmail))
-                return (true);
-            else
-                return (false);
-        }
+        
         /// <summary>
         /// Close window
         /// </summary>

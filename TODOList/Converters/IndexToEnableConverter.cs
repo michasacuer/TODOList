@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace TODOList
 {
-    class IndexToEnableConverter : IValueConverter
+    public class IndexToEnableConverter : IValueConverter
     {
         public static IndexToEnableConverter instance = new IndexToEnableConverter();
         /// <summary>

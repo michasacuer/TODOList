@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace TODOList
 {
-    class MultiCommandConverter:IMultiValueConverter
+    public class MultiCommandConverter:IMultiValueConverter
     {
         public static MultiCommandConverter Instance = new MultiCommandConverter();
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

@@ -9,7 +9,7 @@ using System.Windows.Data;
 namespace TODOList
 {
     [ValueConversion(typeof(bool), typeof(bool))]
-    class InverseBooleanConverter : IValueConverter
+    public class InverseBooleanConverter : IValueConverter
     {
         /// <summary>
         /// Convert boolean to his negative

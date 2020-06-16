@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -13,7 +9,7 @@ namespace TODOList
     /// Converter that convert boolean variable from Task class
     /// on control visibility property
     /// </summary>
-    class booleanToVisibilityConverter : IValueConverter
+    public class booleanToVisibilityConverter : IValueConverter
     {
         /// <summary>
         /// Convert boolean to visibility

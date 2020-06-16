@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:local="clr-namespace:TODOList"
         mc:Ignorable="d"
@@ -20,6 +21,16 @@
         <WindowChrome CaptionHeight="30"/>
     </WindowChrome.WindowChrome>
     <StackPanel>
+        <tb:TaskbarIcon Name="XNotifyIcon" IconSource="list.ico" ToolTipText="TODOList" >
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="Show" Header="Show TODOList" Command="{Binding Show,Mode=TwoWay}" CommandParameter="{Binding ElementName=MainScreen}"/>
+                    <Separator/>
+                    <MenuItem Name="Exit" Header="Exit" Command="{Binding Exit,Mode=TwoWay}"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+        
         <StackPanel Orientation="Horizontal" Height="30" Background="#3F3F3F">
             <Label DockPanel.Dock="Left" Height="30" Content="TODO List - order your work" Foreground="WhiteSmoke"/>
             <WrapPanel DockPanel.Dock="Left" Width="70" Margin="370,0">
@@ -50,6 +61,9 @@
                         </Button>
                         <Button HorizontalAlignment="Left" Width="40" Height="40" ToolTip="Finish selected task" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding OpenInfo}">
                             <Image Source="Graphics/info.png"/>
+                        </Button>
+                        <Button HorizontalAlignment="Left" Width="40" Height="40" ToolTip="Set startup on/off" Background="Transparent" Style="{DynamicResource Button.Hoverless}" Command="{Binding Startup}">
+                            <Image Source="{Binding StartupGraphics,Mode=OneWay}"/>
                         </Button>
                     </WrapPanel>
                 </Border>

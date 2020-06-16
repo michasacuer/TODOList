@@ -37,7 +37,7 @@
                     Style="{DynamicResource Button.Hoverless}" Width="40" Height="40" Command="{Binding CloseWindow}" CommandParameter="{Binding ElementName=AddAttendeeWindow}">
                 <Image Source="Graphics/delete.png"/>
             </Button>
-            
+
         </Grid>
     </StackPanel>
 </Window>

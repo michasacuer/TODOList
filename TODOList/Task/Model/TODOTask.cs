@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TODOList
 {
@@ -13,12 +9,11 @@ namespace TODOList
         public string Title;
         public DateTime StartDate;
         public DateTime EndDate;
-        public DateTime NextNotifyDate;
         public bool IsRepeated;
         public string interval;
         public ObservableCollection<string> Attendees;
         public string Location;
-        public bool IsCompleted;
+        public TaskStatus Status;
         public string Description;
         public bool IsSynced;
         public string Organizer;

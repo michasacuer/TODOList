@@ -10,31 +10,22 @@ using System.Windows;
 
 namespace TODOList
 {
-    class GoogleCalendarService
+    public static class GoogleCalendarService
     {
         #region Variables
-        GoogleAuth googleAuth;
-        CalendarService service;
-        string ApplicationName = "TODOList";
-        #endregion
-        #region Constructor
-        public GoogleCalendarService()
+        static GoogleAuth googleAuth = new GoogleAuth();
+        static CalendarService service = new CalendarService(new BaseClientService.Initializer()
         {
-            //Create instance for googleAuth and new service
-            googleAuth = new GoogleAuth();
-            service = new CalendarService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = googleAuth.GetCredential(),
-                ApplicationName = this.ApplicationName
-            });
-        }
+            HttpClientInitializer = googleAuth.GetCredential(),
+            ApplicationName = "TODOList"
+        });
         #endregion
         #region Methods
         /// <summary>
         /// Insert task into Google Calendar
         /// </summary>
         /// <param name="task"></param>
-        public void InsertIntoCalendar(TaskViewModel task)
+        public static void InsertIntoCalendar(TaskViewModel task)
         {
             try
             {
@@ -93,7 +84,7 @@ namespace TODOList
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public bool CheckIfEventExists(TaskViewModel task)
+        public static bool CheckIfEventExists(TaskViewModel task)
         {
             EventsResource.ListRequest request = service.Events.List("primary");
             Events events = request.Execute();
@@ -110,7 +101,7 @@ namespace TODOList
         /// Remove event from Google Calendar
         /// </summary>
         /// <param name="task"></param>
-        public void RemoveEvent(TaskViewModel task)
+        public static void RemoveEvent(TaskViewModel task)
         {
             if (task.IsRepeated)
             {
@@ -120,12 +111,14 @@ namespace TODOList
                     foreach(Event instance in instances.Items)
                     {
                         instance.Status = "cancelled";
-                        service.Events.Update(instance, "primary", instance.Id).Execute();
+                        if (service.Events.Get("primary", instance.Id).Execute() != null)
+                            service.Events.Update(instance, "primary", instance.Id).Execute();
                     }
             }
             else
             {
-                service.Events.Delete("primary", task.GoogleID).Execute();
+                Event e = service.Events.Get("primary", task.GoogleID).Execute();
+                if (e!=null) service.Events.Delete("primary", task.GoogleID).Execute();
             }
             
         }
@@ -133,7 +126,7 @@ namespace TODOList
         /// Edit task synced with Google Calendar
         /// </summary>
         /// <param name="task"></param>
-        public void EditEvent(TaskViewModel task)
+        public static void EditEvent(TaskViewModel task)
         {
             try
             {
@@ -188,7 +181,7 @@ namespace TODOList
         /// Get event id by title
         /// </summary>
         /// <param name="title"></param>
-        private string getGoogleId(string title)
+        private static string getGoogleId(string title)
         {
             EventsResource.ListRequest request = service.Events.List("primary");
             Events events = request.Execute();
