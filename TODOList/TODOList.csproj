@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>list.ico</ApplicationIcon>
+    <ApplicationIcon>Views\list.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -133,7 +133,7 @@
     </ApplicationDefinition>
     <Compile Include="MainCollection.cs" />
     <Compile Include="Other\AddParticipants\AttendeeManagment.cs" />
-    <Compile Include="AddParticipantsWindow.xaml.cs">
+    <Compile Include="Views\AddParticipantsWindow.xaml.cs">
       <DependentUpon>AddParticipantsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MailValidation\MailValidation.cs" />
@@ -144,7 +144,7 @@
     <Compile Include="Google\OAuth2.0\GoogleAuth.cs" />
     <Compile Include="Converters\IndexToEnableConverter.cs" />
     <Compile Include="Other\Info\InfoViewModel.cs" />
-    <Compile Include="InfoWindow.xaml.cs">
+    <Compile Include="Views\InfoWindow.xaml.cs">
       <DependentUpon>InfoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\BaseViewModel.cs" />
@@ -156,18 +156,18 @@
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\MultiCommandConverter.cs" />
-    <Compile Include="NewTask.xaml.cs">
+    <Compile Include="Views\NewTask.xaml.cs">
       <DependentUpon>NewTask.xaml</DependentUpon>
     </Compile>
-    <Page Include="AddParticipantsWindow.xaml">
+    <Page Include="Views\AddParticipantsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InfoWindow.xaml">
+    <Page Include="Views\InfoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -176,11 +176,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Task\View\TaskViewModel.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="NewTask.xaml">
+    <Page Include="Views\NewTask.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -222,7 +222,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="list.ico">
+    <Resource Include="Views\list.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

@@ -149,13 +149,13 @@ namespace TODOList
             {
                 if (IsRepeated)
                 {
-                    return "Graphics/refresh.png";
+                    return "/Graphics/refresh.png";
                 }
                 else
                 {
-                    if (Status == TaskStatus.Finished) return "Graphics/check.png";
-                    else if (Status == TaskStatus.InProgress) return "Graphics/in_progress.png";
-                    else return "Graphics/square.png";
+                    if (Status == TaskStatus.Finished) return "/Graphics/check.png";
+                    else if (Status == TaskStatus.InProgress) return "/Graphics/in_progress.png";
+                    else return "/Graphics/square.png";
                 }
             }
         }
@@ -190,8 +190,8 @@ namespace TODOList
         {
             get
             {
-                if (IsSynced) return "Graphics/google.png";
-                else return "Graphics/google_black.png";
+                if (IsSynced) return "/Graphics/google.png";
+                else return "/Graphics/google_black.png";
             }
         }
 
