@@ -1,16 +1,15 @@
 ﻿using Xunit;
-using TODOList;
 
 namespace TODOList.Tests
 {
     public class AddParticipantsViewModelTests
     {
         [Theory]
-        [InlineData("testdata",false)]
+        [InlineData("testdata", false)]
         [InlineData("test.data", false)]
         [InlineData("test%data", false)]
         [InlineData("test@data.pl", true)]
-        public void IsMailValid_Test(string mail,bool expected)
+        public void IsMailValid_Test(string mail, bool expected)
         {
 
             Assert.Equal(expected, MailValidation.IsEmailValid(mail));

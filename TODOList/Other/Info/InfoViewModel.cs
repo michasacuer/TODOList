@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 
 namespace TODOList
 {
-    class InfoViewModel:BaseViewModel
+    class InfoViewModel : BaseViewModel
     {
         #region Commands
         public ICommand close { get; set; }
@@ -31,7 +26,7 @@ namespace TODOList
         public InfoViewModel()
         {
             this.close = new RelayCommand<Window>(CloseWindow);
-            Text = "Created by: Mateusz Trybuła "+"Icons and graphics: https://icons8.com/icons @jakub.dmuchowski";
+            Text = "Created by: Mateusz Trybuła " + "Icons and graphics: https://icons8.com/icons @jakub.dmuchowski";
         }
         #endregion
 

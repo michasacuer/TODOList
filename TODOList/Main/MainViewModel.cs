@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Windows;
-using System.Windows.Input;
-using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
-using System.Windows.Controls;
 using System.Timers;
-using Microsoft.Win32;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using TODOList.Properties;
-using System.Reflection;
-using IWshRuntimeLibrary;
 
 namespace TODOList
 {
-    internal class MainViewModel:BaseViewModel
+    internal class MainViewModel : BaseViewModel
     {
         #region Commands
         public ICommand Open { get; set; }
@@ -41,12 +37,14 @@ namespace TODOList
         #region Fields and Properties
         private Timer myTimer;
 
+        private GoogleCalendarService service = new GoogleCalendarService();
+
         public string StartupGraphics
         {
             get
             {
-                if (Settings.Default.IfStartup) return "Graphics/color_os.png";
-                else return "Graphics/white_os.png";
+                if (Settings.Default.IfStartup) return "/Graphics/color_os.png";
+                else return "/Graphics/white_os.png";
             }
         }
 
@@ -59,7 +57,7 @@ namespace TODOList
             }
             set
             {
-                if (value>-1) index = MainCollection.Main.IndexOf(Tasks[value]);
+                if (value > -1) index = MainCollection.Main.IndexOf(Tasks[value]);
                 else index = -1;
                 OnPropertyChange("Index");
             }
@@ -178,15 +176,15 @@ namespace TODOList
         /// <param name="index"></param>
         private void RemoveParticipants(int index)
         {
-            if (index > -1) AttendeeManagment.Remove(MainCollection.Main[Index].Attendees,index);
+            if (index > -1) AttendeeManagment.Remove(MainCollection.Main[Index].Attendees, index);
             else MessageBox.Show("First choose mail to delete!", "Wrong index selected!", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         private void SyncEvent()
         {
-            GoogleCalendarService.InsertIntoCalendar(MainCollection.Main[Index]);
-            if (GoogleCalendarService.CheckIfEventExists(MainCollection.Main[Index]))
+            service.InsertIntoCalendar(MainCollection.Main[Index]);
+            if (service.CheckIfEventExists(MainCollection.Main[Index]))
             {
-                MessageBox.Show("Event successful synced with Google Calendar!","Synced!",MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Event successful synced with Google Calendar!", "Synced!", MessageBoxButton.OK, MessageBoxImage.Information);
                 MainCollection.Main[Index].IsSynced = true;
             }
             else
@@ -199,7 +197,7 @@ namespace TODOList
         /// </summary>
         private void RemoveSelected()
         {
-            MainCollection.RemoveSelected(Index);
+            if (!MainCollection.RemoveSelected(Index)) MessageBox.Show("We got an error!", "Error during remove", MessageBoxButton.OK, MessageBoxImage.Error);
 
             SetDateRange("all");
         }
@@ -226,7 +224,7 @@ namespace TODOList
             }
             AddNew.ShowDialog();
 
-            
+
         }
         /// <summary>
         /// Add new task or subtask
@@ -235,25 +233,26 @@ namespace TODOList
         public void NewTask(object[] param)
         {
             (param[0] as Window).Close();
-            List<object> classParam=param.ToList();
+            List<object> classParam = param.ToList();
             classParam.RemoveAt(0);
-            if (classParam[4] == null) { classParam[4] = DateTime.Now.ToShortDateString(); classParam[5]=DateTime.Now.Hour + 1; }
-            if (classParam[0].ToString() == String.Empty) classParam[0] = new StringBuilder("(Empty subject)");
-            if (classParam[10].ToString() == "Edit") editTask(classParam);
-            else
-            {
-                DateTime start = Convert.ToDateTime(classParam[4]);
-                start = start.AddHours(Convert.ToInt32(classParam[5]));
-                start = start.AddMinutes(Convert.ToInt32(classParam[6]));
-                DateTime end = Convert.ToDateTime(classParam[4]);
-                end = end.AddHours(Convert.ToInt32(classParam[7]));
-                end = end.AddMinutes(Convert.ToInt32(classParam[8]));
+            classParam.Add(Index);
+            classParam[3] = ((ComboBoxItem)classParam[3]).Content.ToString();
 
-                if (CheckHoursAvability(start, end))
-                {
-                    MainCollection.Main.Add(new TaskViewModel(classParam));
-                }
-            }
+            if (classParam[4] == null) { classParam[4] = DateTime.Now.ToShortDateString(); classParam[5] = DateTime.Now.Hour + 1; }
+            DateTime start = Convert.ToDateTime(classParam[4]);
+            start = start.AddHours(Convert.ToInt32(classParam[5]));
+            start = start.AddMinutes(Convert.ToInt32(classParam[6]));
+            DateTime end = Convert.ToDateTime(classParam[4]);
+            end = end.AddHours(Convert.ToInt32(classParam[7]));
+            end = end.AddMinutes(Convert.ToInt32(classParam[8]));
+
+            HoursAvailability hours = new HoursAvailability();
+
+            StringBuilder msg = new StringBuilder();
+            msg.AppendLine("Error during add or edit task, try again!");
+            msg.AppendLine("The most probabilty problem: task overlapping");
+            if (!MainCollection.Add(classParam,hours.CheckHoursAvailability(MainCollection.Main,start,end))) 
+                MessageBox.Show(msg.ToString(), "Error during add", MessageBoxButton.OK, MessageBoxImage.Error);
 
             SetDateRange("all");
         }
@@ -262,8 +261,8 @@ namespace TODOList
         /// </summary>
         private void _FinishTask()
         {
-            if(Index>=0)
-                MainCollection.Main[Index].Status=TaskStatus.Finished;
+            if (Index >= 0)
+                MainCollection.Main[Index].Status = TaskStatus.Finished;
 
             SetDateRange("all");
         }
@@ -299,79 +298,37 @@ namespace TODOList
             InfoWindow info = new InfoWindow();
             info.ShowDialog();
         }
-        /// <summary>
-        /// Edit selected task
-        /// </summary>
-        /// <param name="param"></param>
-        private void editTask(List<object> Prop)
-        {
-            MainCollection.Main[Index].Title = Prop[0].ToString();
-            MainCollection.Main[Index].Location = Prop[1].ToString();
-            MainCollection.Main[Index].IsRepeated = (bool)Prop[2];
-            MainCollection.Main[Index].Interval = ((ComboBoxItem)Prop[3]).Content.ToString();
 
-            DateTime start = Convert.ToDateTime(Prop[4]);
-            start = start.AddHours(Convert.ToInt32(Prop[5]));
-            start = start.AddMinutes(Convert.ToInt32(Prop[6]));
-            DateTime end = Convert.ToDateTime(Prop[4]);
-            end = end.AddHours(Convert.ToInt32(Prop[7]));
-            end = end.AddMinutes(Convert.ToInt32(Prop[8]));
-
-            if (CheckHoursAvability(start,end))
-            {
-                MainCollection.Main[Index].StartDate = start;
-
-                MainCollection.Main[Index].EndDate = end;
-
-                if (MainCollection.Main[Index].StartDate > MainCollection.Main[Index].EndDate) MainCollection.Main[Index].EndDate = MainCollection.Main[Index].StartDate.AddHours(1);
-            }
-
-            if(MainCollection.Main[Index].IsRepeated) MainCollection.Main[Index].SetNextNotifyDate();
-            if (MainCollection.Main[Index].IsSynced) GoogleCalendarService.EditEvent(MainCollection.Main[Index]);
-
-            SetDateRange("all");
-        }
-        private bool CheckHoursAvability(DateTime start,DateTime end)
-        {
-            foreach(TaskViewModel task in MainCollection.Main.Select(x=>x).Where(x=>x.StartDate.Day==start.Day))
-            {
-                if ((start.TimeOfDay < task.EndDate.TimeOfDay) && (task.StartDate.TimeOfDay > end.TimeOfDay))
-                {
-                    MessageBox.Show("Hours overlapping with " + task.Title + "(" + task.StartDate + " - " + task.EndDate, 
-                        "Hours overlapping", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return false;
-                }
-            }
-            return true;
-        }
         /// <summary>
         /// Check for tasks starting in max 1 hour
         /// </summary>
         private void CheckTasks(bool setTime)
         {
-            foreach(TaskViewModel task in MainCollection.Main)
+            StringBuilder tasks = new StringBuilder();
+
+            foreach (TaskViewModel task in MainCollection.Main)
             {
-                if (task.CheckDate()==TaskStatus.StartingSoon)
+                if (task.CheckDate() == TaskStatus.StartingSoon)
                 {
-                    MessageBox.Show("Your task: '" + task.Title + "' starting soon(" + task.StartDate.ToShortTimeString() + ")", "Your next task!",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    tasks.AppendLine($"Your task: {task.Title} starting soon ({task.EndDate.ToShortTimeString()})");
                 }
-                else if(task.CheckDate() == TaskStatus.InProgress)
+                else if (task.CheckDate() == TaskStatus.InProgress)
                 {
-                    MessageBox.Show("Your task: '" + task.Title + "' is already in progress from ("+task.StartDate.ToShortTimeString()+")", "Your next task!",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    tasks.AppendLine($"Your task: {task.Title} is already in progress. Finish at ({task.EndDate.ToShortTimeString()})");
                 }
                 else if (task.CheckDate() == TaskStatus.Finished)
                 {
-                    MessageBox.Show("Your task: '" + task.Title + "' finished at (" + task.EndDate.ToShortTimeString() + ")", "Your next task!",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    tasks.AppendLine($"Your task: {task.Title} finished at ({task.EndDate.ToShortTimeString()})");
                     if (task.IsRepeated) task.SetNextNotifyDate();
                 }
 
                 if (task.EndDate <= DateTime.Now) task.Status = TaskStatus.Finished;
             }
 
-            if(setTime) SetTimer(30);
+            if (tasks.Length != 0) MessageBox.Show(tasks.ToString(), "Your next tasks!",
+                           MessageBoxButton.OK, MessageBoxImage.Information);
+
+            if (setTime) SetTimer(30);
         }
         /// <summary>
         /// Display tasks to do on this day
@@ -379,7 +336,7 @@ namespace TODOList
         private void CheckToday()
         {
             string msg = "Today tasks: ";
-            foreach(TaskViewModel task in MainCollection.Main)
+            foreach (TaskViewModel task in MainCollection.Main)
             {
                 if (DateTime.Now.Day == task.StartDate.Day) msg += task.Title + " (" + task.StartDate.ToShortTimeString() + "), ";
             }
@@ -391,48 +348,16 @@ namespace TODOList
         /// </summary>
         private void SetStartup()
         {
-            
+            Startup startup = new Startup();
+
             try
             {
-                if (!Settings.Default.IfStartup)
+                if (startup.SetStartup())
                 {
-                    WshShellClass wshShell = new WshShellClass();
-                    IWshRuntimeLibrary.IWshShortcut shortcut;
-                    string startUpFolderPath =
-                      Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-
-                    // Create the shortcut
-                    shortcut =
-                      (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(
-                        startUpFolderPath + "\\" +
-                        Application.Current.MainWindow.GetType().Assembly + ".lnk");
-
-                    shortcut.TargetPath = Assembly.GetExecutingAssembly().Location;
-                    shortcut.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                    shortcut.Description = "Launch My Application";
-                    shortcut.IconLocation = AppDomain.CurrentDomain.BaseDirectory + @"\list.ico";
-                    shortcut.Save();
-
                     MessageBox.Show("Application will be starting with system");
                 }
                 else
                 {
-                    string startUpFolderPath =
-                    Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-
-                    DirectoryInfo di = new DirectoryInfo(startUpFolderPath);
-                    FileInfo[] files = di.GetFiles("*.lnk");
-
-                    foreach (FileInfo fi in files)
-                    {
-                        string shortcutTargetFile = GetShortcutTargetFile(fi.FullName);
-
-                        if (shortcutTargetFile.EndsWith("TODOList.exe",
-                              StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            System.IO.File.Delete(fi.FullName);
-                        }
-                    }
                     MessageBox.Show("Application will not be longer starting with system");
                 }
 
@@ -442,38 +367,13 @@ namespace TODOList
 
                 Settings.Default.Save();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            
-
         }
-        /// <summary>
-        /// In order to determine if an existing shortcut 
-        /// file is pointing to our application, we need to be able 
-        /// to read the TargetPath from a shortcut file.
-        /// </summary>
-        /// <param name="shortcutFilename"></param>
-        /// <returns></returns>
-        public string GetShortcutTargetFile(string shortcutFilename)
-        {
-            string pathOnly = Path.GetDirectoryName(shortcutFilename);
-            string filenameOnly = Path.GetFileName(shortcutFilename);
 
-            Shell32.Shell shell = new Shell32.ShellClass();
-            Shell32.Folder folder = shell.NameSpace(pathOnly);
-            Shell32.FolderItem folderItem = folder.ParseName(filenameOnly);
-            if (folderItem != null)
-            {
-                Shell32.ShellLinkObject link =
-                  (Shell32.ShellLinkObject)folderItem.GetLink;
-                return link.Path;
-            }
-
-            return String.Empty; // Not found
-        }
         #endregion
         #region Timer
         /// <summary>

@@ -2,30 +2,41 @@
 using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace TODOList
 {
-    public static class GoogleCalendarService
+    public class GoogleCalendarService
     {
         #region Variables
-        static GoogleAuth googleAuth = new GoogleAuth();
-        static CalendarService service = new CalendarService(new BaseClientService.Initializer()
+        GoogleAuth googleAuth;
+        CalendarService service;
+        string ApplicationName = "TODOList";
+        #endregion
+        #region Constructor
+        public GoogleCalendarService()
         {
-            HttpClientInitializer = googleAuth.GetCredential(),
-            ApplicationName = "TODOList"
-        });
+            //Create instance for googleAuth and new service
+            googleAuth = new GoogleAuth();
+            service = new CalendarService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = googleAuth.GetCredential(),
+                ApplicationName = this.ApplicationName
+            });
+        }
+
+        public GoogleCalendarService(CalendarService calendar)
+        {
+            service = calendar;
+        }
         #endregion
         #region Methods
         /// <summary>
         /// Insert task into Google Calendar
         /// </summary>
         /// <param name="task"></param>
-        public static void InsertIntoCalendar(TaskViewModel task)
+        public void InsertIntoCalendar(TaskViewModel task)
         {
             try
             {
@@ -84,13 +95,13 @@ namespace TODOList
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public static bool CheckIfEventExists(TaskViewModel task)
+        public bool CheckIfEventExists(TaskViewModel task)
         {
             EventsResource.ListRequest request = service.Events.List("primary");
             Events events = request.Execute();
             if (events.Items != null && events.Items.Count > 0)
             {
-                foreach(var eventItem in events.Items)
+                foreach (var eventItem in events.Items)
                 {
                     if (eventItem.Summary == task.Title) return true;
                 }
@@ -101,14 +112,14 @@ namespace TODOList
         /// Remove event from Google Calendar
         /// </summary>
         /// <param name="task"></param>
-        public static void RemoveEvent(TaskViewModel task)
+        public bool RemoveEvent(TaskViewModel task)
         {
             if (task.IsRepeated)
             {
-                Events instances= service.Events.Instances("primary", task.GoogleID).Execute(); ;
+                Events instances = service.Events.Instances("primary", task.GoogleID).Execute(); ;
 
-                if(instances!=null)
-                    foreach(Event instance in instances.Items)
+                if (instances != null)
+                    foreach (Event instance in instances.Items)
                     {
                         instance.Status = "cancelled";
                         if (service.Events.Get("primary", instance.Id).Execute() != null)
@@ -118,15 +129,17 @@ namespace TODOList
             else
             {
                 Event e = service.Events.Get("primary", task.GoogleID).Execute();
-                if (e!=null) service.Events.Delete("primary", task.GoogleID).Execute();
+                if (e != null) service.Events.Delete("primary", task.GoogleID).Execute();
             }
-            
+
+            return !CheckIfEventExists(task);
+
         }
         /// <summary>
         /// Edit task synced with Google Calendar
         /// </summary>
         /// <param name="task"></param>
-        public static void EditEvent(TaskViewModel task)
+        public void EditEvent(TaskViewModel task)
         {
             try
             {
@@ -181,7 +194,7 @@ namespace TODOList
         /// Get event id by title
         /// </summary>
         /// <param name="title"></param>
-        private static string getGoogleId(string title)
+        private string getGoogleId(string title)
         {
             EventsResource.ListRequest request = service.Events.List("primary");
             Events events = request.Execute();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -44,7 +43,7 @@ namespace TODOList
 
             ((TextBox)variables[1]).Text = String.Empty;
         }
-        
+
         /// <summary>
         /// Close window
         /// </summary>

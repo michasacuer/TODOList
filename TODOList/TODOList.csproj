@@ -131,7 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="MainCollection.cs" />
+    <Compile Include="TaskCollectionManagment\HoursAvailability.cs" />
+    <Compile Include="Startup\ShortcutName.cs" />
+    <Compile Include="Startup\Startup.cs" />
+    <Compile Include="TaskCollectionManagment\MainCollection.cs" />
     <Compile Include="Other\AddParticipants\AttendeeManagment.cs" />
     <Compile Include="Views\AddParticipantsWindow.xaml.cs">
       <DependentUpon>AddParticipantsWindow.xaml</DependentUpon>
@@ -148,7 +151,7 @@
       <DependentUpon>InfoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Main\BaseViewModel.cs" />
-    <Compile Include="SelectDateRange.cs" />
+    <Compile Include="TaskCollectionManagment\SelectDateRange.cs" />
     <Compile Include="Serialization\Serialization.cs" />
     <Compile Include="Task\Status\TaskStatus.cs" />
     <Compile Include="Task\Model\TODOTask.cs" />
@@ -300,8 +303,6 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TaskCollectionManagment\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

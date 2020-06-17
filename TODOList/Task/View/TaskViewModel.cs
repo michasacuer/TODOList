@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace TODOList
 {
     [Serializable()]
-    public class TaskViewModel:BaseViewModel
+    public class TaskViewModel : BaseViewModel
     {
         TODOTask task = new TODOTask();
 
@@ -242,7 +237,7 @@ namespace TODOList
             this.Title = Prop[0].ToString();
             this.Location = Prop[1].ToString();
             this.IsRepeated = (bool)Prop[2];
-            this.Interval = ((ComboBoxItem)Prop[3]).Content.ToString();
+            this.Interval = Prop[3].ToString();
 
             this.StartDate = Convert.ToDateTime(Prop[4]);
             this.StartDate = this.StartDate.AddHours(Convert.ToInt32(Prop[5]));
@@ -270,31 +265,31 @@ namespace TODOList
             switch (Interval)
             {
                 case "Every day":
-                    this.StartDate=this.StartDate.AddDays(1);
-                    this.EndDate=this.EndDate.AddDays(1);
+                    StartDate = StartDate.AddDays(1);
+                    EndDate = EndDate.AddDays(1);
                     break;
                 case "Every week":
-                    this.StartDate = this.StartDate.AddDays(7);
-                    this.EndDate=this.EndDate.AddDays(7);
+                    StartDate = StartDate.AddDays(7);
+                    EndDate = EndDate.AddDays(7);
                     break;
                 case "Every month":
-                    this.StartDate = this.StartDate.AddMonths(1);
-                    this.EndDate=this.EndDate.AddMonths(1);
+                    StartDate = StartDate.AddMonths(1);
+                    EndDate = EndDate.AddMonths(1);
                     break;
             }
-            
+
         }
 
         public TaskStatus CheckDate()
         {
-            if ((this.StartDate - DateTime.Now) <= TimeSpan.FromHours(1) 
-                && (this.StartDate - DateTime.Now) > TimeSpan.FromHours(1))
+            if ((StartDate - DateTime.Now) <= TimeSpan.FromHours(1)
+                && (StartDate - DateTime.Now) > TimeSpan.FromHours(1))
             {
                 return TaskStatus.StartingSoon;
             }
-            else if ((DateTime.Now - this.EndDate) <= TimeSpan.FromHours(1)
-                && (DateTime.Now - this.EndDate) >= TimeSpan.FromHours(0)) return TaskStatus.Finished;
-            else if (DateTime.Now < this.EndDate && DateTime.Now >= this.StartDate) return TaskStatus.InProgress;
+            else if ((DateTime.Now - EndDate) <= TimeSpan.FromHours(1)
+                && (DateTime.Now - EndDate) >= TimeSpan.FromHours(0)) return TaskStatus.Finished;
+            else if (DateTime.Now < EndDate && DateTime.Now >= StartDate) return TaskStatus.InProgress;
 
             return TaskStatus.NotStarted;
         }

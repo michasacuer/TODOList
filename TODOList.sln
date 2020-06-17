@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TODOList", "TODOList\TODOList.csproj", "{99757079-2FA1-4D56-AD2F-60FC6625505B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TODOList.Tests", "TODOList.Tests\TODOList.Tests.csproj", "{90C4D238-41C8-412E-89DE-4C84BDA29BE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TODOList.Tests", "TODOList.Tests\TODOList.Tests.csproj", "{24B36D5B-6A78-495D-AEA6-BACA1AE01C0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{99757079-2FA1-4D56-AD2F-60FC6625505B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99757079-2FA1-4D56-AD2F-60FC6625505B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99757079-2FA1-4D56-AD2F-60FC6625505B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90C4D238-41C8-412E-89DE-4C84BDA29BE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90C4D238-41C8-412E-89DE-4C84BDA29BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90C4D238-41C8-412E-89DE-4C84BDA29BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90C4D238-41C8-412E-89DE-4C84BDA29BE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24B36D5B-6A78-495D-AEA6-BACA1AE01C0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24B36D5B-6A78-495D-AEA6-BACA1AE01C0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24B36D5B-6A78-495D-AEA6-BACA1AE01C0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24B36D5B-6A78-495D-AEA6-BACA1AE01C0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TODOList
 {
@@ -36,7 +31,7 @@ namespace TODOList
             System.IO.StreamReader file = new StreamReader(path);
             var ret = reader.Deserialize(file) as ObservableCollection<TaskViewModel>;
             file.Close();
-            
+
             return ret;
         }
     }

@@ -1,12 +1,10 @@
-﻿
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace TODOList
 {
     public static class AttendeeManagment
     {
-        public static void Add(ObservableCollection<string> AttendeeList,string mail)
+        public static void Add(ObservableCollection<string> AttendeeList, string mail)
         {
             AttendeeList.Add(mail);
         }

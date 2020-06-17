@@ -1,7 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Xunit;
-using TODOList;
-using System;
 
 namespace TODOList.Tests
 {
