@@ -141,7 +141,7 @@
     </Compile>
     <Compile Include="MailValidation\MailValidation.cs" />
     <Compile Include="Other\AddParticipants\AddParticipantsViewModel.cs" />
-    <Compile Include="Converters\booleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Google\CalendarService\GoogleCalendarService.cs" />
     <Compile Include="Google\OAuth2.0\GoogleAuth.cs" />

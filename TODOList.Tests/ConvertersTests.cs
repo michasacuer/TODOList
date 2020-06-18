@@ -9,7 +9,7 @@ namespace TODOList.Tests
         [Fact]
         public void booleanToVisibilityConverter_Test()
         {
-            booleanToVisibilityConverter converter = new booleanToVisibilityConverter();
+            BooleanToVisibilityConverter converter = new BooleanToVisibilityConverter();
 
             Assert.Equal(Visibility.Visible, converter.Convert(true, null, null, null));
             Assert.Equal(Visibility.Hidden, converter.Convert(false, null, null, null));
