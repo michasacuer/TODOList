@@ -10,7 +10,6 @@ namespace TODOList.Tests
         [Fact]
         public void Add_Test()
         {
-            MainCollection.service = new GoogleCalendarService(null);
             MainCollection.Main = new ObservableCollection<TaskViewModel>();
 
             List<object> NewTaskParameters = new List<object>
@@ -35,7 +34,6 @@ namespace TODOList.Tests
         [Fact]
         public void Remove_Test()
         {
-            MainCollection.service = new GoogleCalendarService(null);
             MainCollection.Main = new ObservableCollection<TaskViewModel>
             {
                 new TaskViewModel(new List<object> {"Task1","Location1",false,"None",DateTime.Now.ToShortDateString(),1,30,2,30,"Desc1","New" }),
@@ -60,7 +58,6 @@ namespace TODOList.Tests
         [Fact]
         public void Edit_Test()
         {
-            MainCollection.service = new GoogleCalendarService(null);
             MainCollection.Main = new ObservableCollection<TaskViewModel>
             {
                 new TaskViewModel(new List<object> {"Task1","Location1",false,"None",DateTime.Now.ToShortDateString(),1,30,2,30,"Desc1","New" }),
@@ -79,12 +76,11 @@ namespace TODOList.Tests
                 "Task2Edited","Location2",true,"Every day",DateTime.Now.ToShortDateString(),2,30,3,30,"Desc1","New",1
             };
 
-            MainCollection.editTask(EditParameters, true);
-            MainCollection.editTask(EditParameters2, true);
+            MainCollection.EditTask(EditParameters, true);
+            MainCollection.EditTask(EditParameters2, true);
 
             Assert.Equal("TaskEdited", MainCollection.Main[0].Title);
             Assert.Equal("18-Jun-20 02:30:00 - 18-Jun-20 03:30:00", MainCollection.Main[1].DateString);
-
         }
     }
 }

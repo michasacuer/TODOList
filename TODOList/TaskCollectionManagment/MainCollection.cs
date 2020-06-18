@@ -9,14 +9,13 @@ namespace TODOList
     {
         public static ObservableCollection<TaskViewModel> Main;
 
-        public static GoogleCalendarService service = new GoogleCalendarService();
+        public static GoogleCalendarService Service { get; } = new GoogleCalendarService();
 
         public static bool RemoveSelected(int Index)
         {
-
             bool IfUnsynced = true;
             if (Index >= 0)
-                if (Main[Index].IsSynced) IfUnsynced = service.RemoveEvent(Main[Index]);
+                if (Main[Index].IsSynced) IfUnsynced = Service.RemoveEvent(Main[Index]);
             if (IfUnsynced)
             {
                 Main.RemoveAt(Index);
@@ -28,11 +27,14 @@ namespace TODOList
 
         public static bool Add(List<object> param,bool HourAvailable)
         {
+            // dlaczego odwólujesz się do 4 elemntu z arraya a nie na przykład 8? 
+            // troszke to bez sensu, miej to na uwadze
+            // no i tak samo, ify raczej w klamrach a nie one linery
             if (param[4] == null) { param[4] = DateTime.Now.ToShortDateString(); param[5] = DateTime.Now.Hour + 1; }
             if (param[0].ToString() == String.Empty) param[0] = new StringBuilder("(Empty subject)");
             if (param[10].ToString() == "Edit")
             {
-                editTask(param,HourAvailable);
+                EditTask(param,HourAvailable);
                 return true;
             }
             else
@@ -47,9 +49,8 @@ namespace TODOList
             }
         }
 
-        public static void editTask(List<object> Prop, bool HourAvailable)
+        public static void EditTask(List<object> Prop, bool HourAvailable)
         {
-
             int Index = Convert.ToInt32(Prop[11]);
             Main[Index].Title = Prop[0].ToString();
             Main[Index].Location = Prop[1].ToString();
@@ -72,8 +73,15 @@ namespace TODOList
                 if (Main[Index].StartDate > Main[Index].EndDate) Main[Index].EndDate = Main[Index].StartDate.AddHours(1);
             }
 
-            if (Main[Index].IsRepeated) Main[Index].SetNextNotifyDate();
-            if (Main[Index].IsSynced) service.EditEvent(Main[Index]);
+            if (Main[Index].IsRepeated)
+            {
+                Main[Index].SetNextNotifyDate();
+            }
+
+            if (Main[Index].IsSynced)
+            {
+                Service.EditEvent(Main[Index]);
+            }
         }
     }
 }

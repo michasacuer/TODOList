@@ -13,7 +13,7 @@ namespace TODOList
             {
                 default:
                     return tasks;
-                case "this day":
+                case "this day": // zrób enuma na to, coś takiego to syf trocke
                     return new ObservableCollection<TaskViewModel>(tasks.Where(i => i.StartDate.Day == DateTime.Now.Day).ToList());
                 case "next day":
                     return new ObservableCollection<TaskViewModel>(tasks.Where(i => i.StartDate.Day == DateTime.Now.AddDays(1).Day).ToList());
