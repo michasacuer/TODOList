@@ -44,7 +44,7 @@ namespace TODOList
             get
             {
                 if (Settings.Default.IfStartup) return "/Graphics/color_os.png";
-                else return "/Graphics/white_os.png";
+                    return "/Graphics/white_os.png";
             }
         }
 
@@ -238,6 +238,7 @@ namespace TODOList
             classParam.Add(Index);
             classParam[3] = ((ComboBoxItem)classParam[3]).Content.ToString();
 
+            // o tym pisałem, w ogóle nie widać, że to if. Takie one linery to zło
             if (classParam[4] == null) { classParam[4] = DateTime.Now.ToShortDateString(); classParam[5] = DateTime.Now.Hour + 1; }
             DateTime start = Convert.ToDateTime(classParam[4]);
             start = start.AddHours(Convert.ToInt32(classParam[5]));
@@ -248,7 +249,7 @@ namespace TODOList
 
             HoursAvailability hours = new HoursAvailability();
 
-            StringBuilder msg = new StringBuilder();
+            StringBuilder msg = new StringBuilder(); // zmienić na var, nazwe na `sb`. W zasadzie każdy .netowiec wie, że sb == StringBuilder.
             msg.AppendLine("Error during add or edit task, try again!");
             msg.AppendLine("The most probabilty problem: task overlapping");
             if (!MainCollection.Add(classParam,hours.CheckHoursAvailability(MainCollection.Main,start,end))) 
@@ -308,18 +309,20 @@ namespace TODOList
 
             foreach (TaskViewModel task in MainCollection.Main)
             {
-                if (task.CheckDate() == TaskStatus.StartingSoon)
+                // tego string buildera możesz zastąpić string.Format() który pod spodem ma SB który bierze z poola.
+                // Możesz doczytać o array pool
+                switch (task.CheckDate())
                 {
-                    tasks.AppendLine($"Your task: {task.Title} starting soon ({task.EndDate.ToShortTimeString()})");
-                }
-                else if (task.CheckDate() == TaskStatus.InProgress)
-                {
-                    tasks.AppendLine($"Your task: {task.Title} is already in progress. Finish at ({task.EndDate.ToShortTimeString()})");
-                }
-                else if (task.CheckDate() == TaskStatus.Finished)
-                {
-                    tasks.AppendLine($"Your task: {task.Title} finished at ({task.EndDate.ToShortTimeString()})");
-                    if (task.IsRepeated) task.SetNextNotifyDate();
+                    // takie stringi wrzucaj do plików .resx
+                    case TaskStatus.StartingSoon:
+                        tasks.AppendLine($"Your task: {task.Title} starting soon ({task.EndDate.ToShortTimeString()})");
+                        break;
+                    case TaskStatus.InProgress:
+                        tasks.AppendLine($"Your task: {task.Title} is already in progress. Finish at ({task.EndDate.ToShortTimeString()})");
+                        break;
+                    case TaskStatus.Finished:
+                        tasks.AppendLine($"Your task: {task.Title} finished at ({task.EndDate.ToShortTimeString()})");
+                        break;
                 }
 
                 if (task.EndDate <= DateTime.Now) task.Status = TaskStatus.Finished;
