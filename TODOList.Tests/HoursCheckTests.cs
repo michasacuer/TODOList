@@ -18,7 +18,7 @@ namespace TODOList.Tests
         [InlineData("2020-06-18 01:30:00", "2020-06-19 02:30:00", false)]
         public void HoursAvailability_Test(string start,string end,bool expected)
         {
-
+            // Arrange:
             var collection = new ObservableCollection<TaskViewModel>
             {
                 new TaskViewModel(new List<object> {"Task1","Location1",false,"None", "18-Jun-2020",1,30,2,30,"Desc1","New" }),
@@ -33,7 +33,12 @@ namespace TODOList.Tests
             DateTime End = DateTime.ParseExact(end, "yyyy-MM-dd HH:mm:ss",
                                        System.Globalization.CultureInfo.InvariantCulture);
             var hours = new HoursAvailability();
-            Assert.Equal(expected, hours.CheckHoursAvailability(collection, Start, End));
+            
+            // Act:
+            bool output = hours.CheckHoursAvailability(collection, Start, End);
+            
+            // Assert:
+            Assert.Equal(expected, output);
         }
     }
 }
