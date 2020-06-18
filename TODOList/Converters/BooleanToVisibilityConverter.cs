@@ -21,11 +21,14 @@ namespace TODOList
         /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Boolean && (bool)value)
-            {
-                return Visibility.Visible;
-            }
-            return Visibility.Hidden;
+            // gdyby nie ten gowniany interfejs moglbys to zrobic w jednej linii:
+            return (bool)value ? Visibility.Visible : Visibility.Hidden;
+            
+            // if (value is Boolean && (bool)value)
+            // {
+            //     return Visibility.Visible;
+            // }
+            // return Visibility.Hidden;
         }
 
         /// <summary>
