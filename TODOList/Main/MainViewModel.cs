@@ -7,6 +7,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TODOList.Main;
 using TODOList.Properties;
 
 namespace TODOList
@@ -318,7 +319,10 @@ namespace TODOList
                         tasks.AppendLine($"Your task: {task.Title} starting soon ({task.EndDate.ToShortTimeString()})");
                         break;
                     case TaskStatus.InProgress:
-                        tasks.AppendLine($"Your task: {task.Title} is already in progress. Finish at ({task.EndDate.ToShortTimeString()})");
+                        // string z pliku Consts.resx
+                        // jak juz uzywasz customowych geterow, seterow to mógłbyś w getterze task.EndDate od razu zwracać
+                        // ...ToShortTimeStirng()
+                        tasks.AppendLine(string.Format(Consts.TASK_IN_PROGESS, task.Title, task.EndDate.ToShortTimeString()));
                         break;
                     case TaskStatus.Finished:
                         tasks.AppendLine($"Your task: {task.Title} finished at ({task.EndDate.ToShortTimeString()})");

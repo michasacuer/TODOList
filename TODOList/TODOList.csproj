@@ -131,6 +131,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Main\Consts.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Consts.resx</DependentUpon>
+    </Compile>
     <Compile Include="TaskCollectionManagment\HoursAvailability.cs" />
     <Compile Include="Startup\ShortcutName.cs" />
     <Compile Include="Startup\Startup.cs" />
@@ -207,6 +212,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Main\Consts.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Consts.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
