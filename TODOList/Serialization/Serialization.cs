@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace TODOList
 {
@@ -14,8 +16,8 @@ namespace TODOList
         /// </summary>
         public static void SaveToXml(ObservableCollection<TaskViewModel> main)
         {
-            System.Xml.Serialization.XmlSerializer writer =
-                new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<TaskViewModel>));
+            // widac co to za typ po prawej, po co te kilometry
+            var writer = new XmlSerializer(typeof(ObservableCollection<TaskViewModel>));
 
             FileStream file = System.IO.File.Create(path);
             writer.Serialize(file, main);
@@ -26,10 +28,10 @@ namespace TODOList
         /// </summary>
         public static ObservableCollection<TaskViewModel> LoadFromXml()
         {
-            System.Xml.Serialization.XmlSerializer reader =
-                new System.Xml.Serialization.XmlSerializer(typeof(ObservableCollection<TaskViewModel>));
-            System.IO.StreamReader file = new StreamReader(path);
-            var ret = reader.Deserialize(file) as ObservableCollection<TaskViewModel>;
+            var reader = new XmlSerializer(typeof(ObservableCollection<TaskViewModel>));
+            var file = new StreamReader(path);
+            // as wywala nulla jak nie może zrzutować. Pisząc tak pokazujesz, że wiesz co robisz
+            var ret = reader.Deserialize(file) as ObservableCollection<TaskViewModel> ?? throw new ArgumentNullException("msg");
             file.Close();
 
             return ret;

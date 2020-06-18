@@ -18,7 +18,7 @@ namespace TODOList
                 string startUpFolderPath =
                   Environment.GetFolderPath(Environment.SpecialFolder.Startup);
 
-                // Create the shortcut
+                // Create the shortcut //nie pisze sie komentarzy w kodzie
                 shortcut =
                   (IWshRuntimeLibrary.IWshShortcut)wshShell.CreateShortcut(
                     startUpFolderPath + "\\" +

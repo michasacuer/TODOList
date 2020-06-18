@@ -27,7 +27,7 @@ namespace TODOList
                 return link.Path;
             }
 
-            return String.Empty; // Not found
+            return String.Empty; // Not found // nie pisze się komentarzy w kodzie
         }
     }
 }
