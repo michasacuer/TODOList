@@ -29,7 +29,6 @@ namespace TODOList.Tests
 
             Assert.Equal(2, MainCollection.Main.Count);
             Assert.DoesNotContain(new TaskViewModel(NewTaskParameters2), MainCollection.Main);
-
         }
 
         [Fact]
@@ -54,7 +53,6 @@ namespace TODOList.Tests
             MainCollection.RemoveSelected(0);
 
             Assert.Empty(MainCollection.Main);
-
         }
 
         [Fact]
@@ -84,7 +82,6 @@ namespace TODOList.Tests
 
             Assert.Equal("TaskEdited", MainCollection.Main[0].Title);
             Assert.Equal("18-Jun-20 02:30:00 - 18-Jun-20 03:30:00", MainCollection.Main[1].DateString);
-
         }
     }
 }
