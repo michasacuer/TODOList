@@ -9,7 +9,7 @@ namespace TODOList.Tests
         [Fact]
         public void booleanToVisibilityConverter_Test()
         {
-            booleanToVisibilityConverter converter = new booleanToVisibilityConverter();
+            var converter = new booleanToVisibilityConverter();
 
             Assert.Equal(Visibility.Visible, converter.Convert(true, null, null, null));
             Assert.Equal(Visibility.Hidden, converter.Convert(false, null, null, null));
@@ -20,7 +20,7 @@ namespace TODOList.Tests
         [Fact]
         public void DateConverter_Test()
         {
-            DateConverter converter = new DateConverter();
+            var converter = new DateConverter();
 
             Assert.Null(converter.Convert(null, null, null, null));
             Assert.Equal(DateTime.Now.ToShortDateString(), converter.Convert(DateTime.Now, null, null, null));
@@ -31,7 +31,7 @@ namespace TODOList.Tests
         [Fact]
         public void IndexToEnableConverter_Test()
         {
-            IndexToEnableConverter converter = new IndexToEnableConverter();
+            var converter = new IndexToEnableConverter();
 
             Assert.Equal(true, converter.Convert(0, null, null, null));
             Assert.Equal(false, converter.Convert(-8, null, null, null));
@@ -41,7 +41,7 @@ namespace TODOList.Tests
         [Fact]
         public void InverseBooleanConverter_Test()
         {
-            InverseBooleanConverter converter = new InverseBooleanConverter();
+            var converter = new InverseBooleanConverter();
 
             Assert.Equal(false, converter.Convert(true, null, null, null));
             Assert.Equal(true, converter.Convert(false, null, null, null));

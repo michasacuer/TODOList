@@ -19,7 +19,7 @@ namespace TODOList.Tests
         public void HoursAvailability_Test(string start,string end,bool expected)
         {
 
-            ObservableCollection<TaskViewModel> collection = new ObservableCollection<TaskViewModel>
+            var collection = new ObservableCollection<TaskViewModel>
             {
                 new TaskViewModel(new List<object> {"Task1","Location1",false,"None", "18-Jun-2020",1,30,2,30,"Desc1","New" }),
                 new TaskViewModel(new List<object> {"Task1","Location1",false,"None", "18-Jun-2020", 2,40,3,30,"Desc1","New" }),
@@ -28,11 +28,11 @@ namespace TODOList.Tests
                 new TaskViewModel(new List<object> {"Task1","Location1",false,"None", "18-Jun-2020", 15,30,16,30,"Desc1","New" }),
             };
 
-            var Start = DateTime.ParseExact(start, "yyyy-MM-dd HH:mm:ss",
+            DateTime Start = DateTime.ParseExact(start, "yyyy-MM-dd HH:mm:ss",
                                        System.Globalization.CultureInfo.InvariantCulture);
-            var End = DateTime.ParseExact(end, "yyyy-MM-dd HH:mm:ss",
+            DateTime End = DateTime.ParseExact(end, "yyyy-MM-dd HH:mm:ss",
                                        System.Globalization.CultureInfo.InvariantCulture);
-            HoursAvailability hours = new HoursAvailability();
+            var hours = new HoursAvailability();
             Assert.Equal(expected, hours.CheckHoursAvailability(collection, Start, End));
         }
     }
